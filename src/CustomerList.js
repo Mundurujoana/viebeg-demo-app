@@ -11,7 +11,7 @@ const CustomerList = () => {
   useEffect(() => {
     const fetchCustomerNames = async () => {
       try {
-        const response = await fetch('https://viebeg-demo.onrender.com/api/customers');
+        const response = await fetch('/api/customers');
         const data = await response.json();
         setCustomerNames(data.map((customer) => customer.customer_name));
       } catch (error) {
@@ -28,14 +28,14 @@ const CustomerList = () => {
     setIsSubmitted(false);
 
     try {
-      const response = await fetch(`https://viebeg-demo.onrender.com/api/customers?name=${customerName}`);
+      const response = await fetch(`/api/customers?name=${customerName}`);
       const data = await response.json();
 
       if (data && data.length > 0) {
         const custId = data.find((customer) => customer.customer_name === customerName)?.cust_id;
 
         if (custId) {
-          const creditScoreResponse = await fetch(`https://viebeg-demo.onrender.com/api/customers/${custId}/creditScore`);
+          const creditScoreResponse = await fetch(`/api/customers/${custId}/creditScore`);
           const creditScoreData = await creditScoreResponse.json();
           setCustomerInfo(creditScoreData);
         } else {
