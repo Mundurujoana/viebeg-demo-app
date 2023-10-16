@@ -11,7 +11,7 @@ const CustomerList = () => {
   useEffect(() => {
     const fetchCustomerNames = async () => {
       try {
-        const response = await fetch('/api/customers');
+        const response = await fetch('https://viebeg-demo.onrender.com/api/customers'); // Update the URL
         const data = await response.json();
         setCustomerNames(data.map((customer) => customer.customer_name));
       } catch (error) {
@@ -28,14 +28,14 @@ const CustomerList = () => {
     setIsSubmitted(false);
 
     try {
-      const response = await fetch(`/api/customers?name=${customerName}`);
+      const response = await fetch(`https://viebeg-demo.onrender.com/api/customers?name=${customerName}`); // Update the URL
       const data = await response.json();
 
       if (data && data.length > 0) {
         const custId = data.find((customer) => customer.customer_name === customerName)?.cust_id;
 
         if (custId) {
-          const creditScoreResponse = await fetch(`/api/customers/${custId}/creditScore`);
+          const creditScoreResponse = await fetch(`https://viebeg-demo.onrender.com/api/customers/${custId}/creditScore`); // Update the URL
           const creditScoreData = await creditScoreResponse.json();
           setCustomerInfo(creditScoreData);
         } else {
@@ -53,6 +53,7 @@ const CustomerList = () => {
     e.preventDefault();
     setIsSubmitted(true);
   };
+  
 
   return (
     <div className="customer-list-container">
@@ -87,7 +88,7 @@ const CustomerList = () => {
 
       {selectedCustomer && isSubmitted && customerInfo && (
         <div className="customer-info">
-          <h2> {selectedCustomer} Creditscore visualisation </h2>
+          <h2> {selectedCustomer} Credit score visualization </h2>
           <BarChart width={600} height={400} data={[customerInfo]}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" />
