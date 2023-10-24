@@ -148,10 +148,17 @@ table tr:hover {
 
 
 .chart-container {
-  margin-top: 20px; /* Add space above the chart */
-  margin-bottom: 20px; /* Add space below the chart */
-  padding: 20px; /* Add padding around the chart */
+  margin-top: 50px; /* Add space above the chart */
+  padding: 40px; /* Add padding around the chart */
   border: 1px solid #ccc; /* Add a border around the chart */
   border-radius: 5px; /* Add rounded corners to the container */
   background-color: #f5f5f5; /* Add a background color to the container */
+
+}
+
+.center {
+display: flex;
+  justify-content: center;
+  align-items: center;
+padding: 40px;
 }

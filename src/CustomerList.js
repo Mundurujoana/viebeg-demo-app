@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './customerList.css';
-import { BarChart, Bar, LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 
 
 const CustomerList = () => {
@@ -78,6 +78,155 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString('en-US', options);
 };
 
+const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
+
+
+const getPaymentMethodData = () => {
+  if (transactionInfo) {
+    const paymentMethods = {};
+
+    transactionInfo.forEach((transaction) => {
+      const paymentMethod = transaction.payment_method || 'Did Not Pay';
+      if (paymentMethod in paymentMethods) {
+        paymentMethods[paymentMethod] += 1;
+      } else {
+        paymentMethods[paymentMethod] = 1;
+      }
+    });
+
+    return Object.keys(paymentMethods).map((method) => ({
+      name: method,
+      value: paymentMethods[method],
+    }));
+  }
+  return [];
+};
+
+// const getPaymentStatusData = () => {
+//   if (transactionInfo) {
+//     const paymentStatuses = {};
+
+//     transactionInfo.forEach((transaction) => {
+//       const paymentStatus = transaction.payment_status || 'Did Not Pay';
+//       if (paymentStatus in paymentStatuses) {
+//         paymentStatuses[paymentStatus] += 1;
+//       } else {
+//         paymentStatuses[paymentStatus] = 1;
+//       }
+//     });
+
+//     return Object.keys(paymentStatuses).map((status) => ({
+//       name: status,
+//       value: paymentStatuses[status],
+//     }));
+//   }
+//   return [];
+// };
+
+const getPaymentStatusData = () => {
+  if (transactionInfo) {
+    const paymentStatuses = {};
+
+    transactionInfo.forEach((transaction) => {
+      let paymentStatus = transaction.payment_status || 'Not Paid';
+      // Capitalize the first letter of each word
+      paymentStatus = paymentStatus.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+
+      if (paymentStatus in paymentStatuses) {
+        paymentStatuses[paymentStatus] += 1;
+      } else {
+        paymentStatuses[paymentStatus] = 1;
+      }
+    });
+
+    return Object.keys(paymentStatuses).map((status) => ({
+      name: status,
+      value: paymentStatuses[status],
+    }));
+  }
+  return [];
+};
+
+
+const getCurrencyData = () => {
+  if (transactionInfo) {
+    const currencies = {};
+
+    transactionInfo.forEach((transaction) => {
+      let currency = transaction.currency || 'Unknown Currency';
+      // Capitalize the first letter of each word
+      currency = currency.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+
+      if (currency in currencies) {
+        currencies[currency] += 1;
+      } else {
+        currencies[currency] = 1;
+      }
+    });
+
+    return Object.keys(currencies).map((currency) => ({
+      name: currency,
+      value: currencies[currency],
+    }));
+  }
+  return [];
+};
+
+
+const getDelayDaysData = () => {
+  if (transactionInfo) {
+    const delayDaysData = {};
+
+    transactionInfo.forEach((transaction) => {
+      const delayDays = transaction.delay_days;
+
+      if (delayDays === null) {
+        if ("MissedPayments" in delayDaysData) {
+          delayDaysData.MissedPayments += 1;
+        } else {
+          delayDaysData.MissedPayments = 1;
+        }
+      } else if (delayDays > 0) {
+        if ("LatePayments" in delayDaysData) {
+          delayDaysData.LatePayments += 1;
+        } else {
+          delayDaysData.LatePayments = 1;
+        }
+      } else if (delayDays < 0) {
+        if ("EarlyPayments" in delayDaysData) {
+          delayDaysData.EarlyPayments += 1;
+        } else {
+          delayDaysData.EarlyPayments = 1;
+        }
+      } else {
+        if ("TimelyPayments" in delayDaysData) {
+          delayDaysData.TimelyPayments += 1;
+        } else {
+          delayDaysData.TimelyPayments = 1;
+        }
+      }
+    });
+
+    return Object.keys(delayDaysData).map((status) => ({
+      name: status,
+      value: delayDaysData[status],
+    }));
+  }
+  return [];
+};
+
+function capitalizeEveryWord(text) {
+  return text
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+
+
+
+
+
 
   return (
     <div className="customer-list-container">
@@ -101,7 +250,7 @@ const formatDate = (date) => {
 
       {selectedCustomer && isSubmitted && customerData && (
         <div className="customer-info">
-          <h2>{selectedCustomer} Information</h2>
+          <h2>{selectedCustomer} Location Information</h2>
           <p>Location Country: {customerData.location_country}</p>
           <p>Location Province: {customerData.location_province}</p>
           <p>Location District: {customerData.location_district}</p>
@@ -118,7 +267,6 @@ const formatDate = (date) => {
           <p>Credit category: {customerInfo.credit_category}</p>
           <p>Amount owed: {customerInfo.amount_owed}</p>
           <p>Missed payments: {customerInfo.missed_payments}</p>
-          <p>Facility Name: {selectedCustomer}</p>
           <p>amount Paid: {customerInfo.amount_paid}</p>
           <p>Total Amount: {customerInfo.total_amount}</p>
           <p>delay Days: {customerInfo.delay_days}</p>
@@ -174,91 +322,115 @@ const formatDate = (date) => {
   </div>
 )}
 
-{selectedCustomer && isSubmitted && transactionInfo && (
-<div className="chart-container">
-        {/* Add meaningful visualization for transactions here */}
-        <h2>Transaction Data</h2>
-        <BarChart width={800} height={500} data={sortedTransactionInfo}>
-          <CartesianGrid stroke="#ccc" />
-          <XAxis
-            dataKey="date_invoice"
-            label={{
-              value: 'Date Invoice',
-              position: 'insideBottom',
-              offset: 30, // Increase the offset for more separation
-              dy: 60,
-            }}
-            tick={{ angle: 45, textAnchor: 'start' }}
-            tickFormatter={formatDate} // Format the dates on the X-axis
-          />
-          <YAxis
-            label={{
-              value: 'Total Amount',
-              angle: -90,
-              position: 'insideLeft',
-              dy: -10,
-            }}
-          />
-          <Tooltip />
-          <Legend />
-          <Bar dataKey="total_amount" barSize={100} fill="#8884d8" name="Total Amount" />
-        </BarChart>
-      </div>
-)}
 
-{selectedCustomer && isSubmitted && transactionInfo && (
-<div className="chart-container">
-      <h2>{selectedCustomer} - Amount Paid vs. Total Amount</h2>
-          <LineChart width={600} height={300} data={[customerInfo]}>
-            <CartesianGrid stroke="#ccc" />
-            <XAxis dataKey="customer_name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="total_amount" stroke="#8884d8" name="Total Amount" />
-            <Line type="monotone" dataKey="amount_paid" stroke="#82ca9d" name="Amount Paid" />
-          </LineChart>
-          </div>
-          )}
-          
 
-{selectedCustomer && isSubmitted && transactionInfo && (
-          <div className="chart-container">
-          <h2>{selectedCustomer} - Credit Score vs. Number of Transactions</h2>
-          <LineChart width={600} height={300} data={[customerInfo]}>
-            <CartesianGrid stroke="#ccc" />
-            <XAxis dataKey="customer_name" />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            <Line type="monotone" dataKey="credit_score" stroke="#8884d8" name="Credit Score" />
-            <Line
-              type="monotone"
-              dataKey="number_of_transactions"
-              stroke="#82ca9d"
-              name="Number of Transactions"
-            />
-          </LineChart>
-          </div>
-          )}
-          {selectedCustomer && isSubmitted && customerInfo && (
+{/* {selectedCustomer && isSubmitted && transactionInfo && (
   <div className="chart-container">
-    <h2>{selectedCustomer} - Credit Score vs. Total Amount Owed</h2>
-    <BarChart width={600} height={300} data={[customerInfo]}>
-      <CartesianGrid stroke="#ccc" />
-      <XAxis dataKey="customer_name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar type="monotone" dataKey="credit_score" fill="#8884d8" name="Credit Score" />
-      <Bar type="monotone" dataKey="amount_owed" fill="#82ca9d" name="Total Amount Owed" />
-    </BarChart>
+    <h2>{selectedCustomer} - Payment Method Distribution</h2>
+    <PieChart width={600} height={300}>
+      <Pie
+        data={getPaymentMethodData()}
+        cx={300}
+        cy={150}
+        labelLine={false}
+        label={(entry) => `${entry.name}: ${entry.value}`}
+        outerRadius={100}
+        fill="#8884d8"
+        dataKey="value"
+      >
+        {getPaymentMethodData().map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+    </PieChart>
+  </div>
+)} */}
+
+
+{selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+        <h2>How is the currency distributed for {capitalizeEveryWord(selectedCustomer)}?</h2>
+    <div className="center">
+    <PieChart width={700} height={400}>
+      <Pie
+        data={getPaymentMethodData()}
+        cx={350}
+        cy={200}
+        labelLine={false}
+        label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+        outerRadius={150}
+        fill="#8884d8"
+        dataKey="value"
+      >
+        {getPaymentMethodData().map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+    </PieChart>
+  </div>
   </div>
 )}
+
+
+
+{selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2> What is the payment status distribution for {capitalizeEveryWord(selectedCustomer)}? </h2>
+    <div className="center">
+    <PieChart width={700} height={400}>
+      <Pie
+        data={getPaymentStatusData()}
+        cx={350}
+        cy={200}
+        labelLine={false}
+        label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+        outerRadius={150}
+        fill="#8884d8"
+        dataKey="value"
+      >
+        {getPaymentStatusData().map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+        ))}
+      </Pie>
+    </PieChart>
+  </div>
+  </div>
+)}
+
+
+
+
+ {selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2>Which Currency is commonly used for transactions at {capitalizeEveryWord(selectedCustomer)} ?</h2>
+    <div className="center">
+    <PieChart width={700} height={400}>
+      <Pie
+        data={getCurrencyData()}
+        cx={350}
+        cy={200}
+        labelLine={false}
+        label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+        outerRadius={150}
+        fill="#8884d8"
+        dataKey="value"
+      >
+        {getCurrencyData().map((entry, index) => (
+          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+          ))}
+      </Pie>
+    </PieChart>
+  </div>
+  </div>
+)}
+
+
+
 
 {selectedCustomer && isSubmitted && customerInfo && (
   <div className="chart-container">
     <h2>{selectedCustomer} - Payment Ratio vs. Number of Missed Payments</h2>
+    <div className="center">
     <BarChart width={600} height={300} data={[customerInfo]}>
       <CartesianGrid stroke="#ccc" />
       <XAxis dataKey="customer_name" />
@@ -269,7 +441,59 @@ const formatDate = (date) => {
       <Bar type="monotone" dataKey="missed_payments" fill="#82ca9d" name="Number of Missed Payments" />
     </BarChart>
   </div>
+  </div>
 )}
+
+
+{selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2>{capitalizeEveryWord(selectedCustomer)} - Delay Days Distribution</h2>
+    <div className="center">
+      <PieChart width={700} height={400}>
+        <Pie
+          data={getDelayDaysData()}
+          cx={400}
+          cy={200}
+          labelLine={false}
+          label={({ name, value, percent }) =>
+            `${name}: ${(percent * 100).toFixed(2)}%`
+          }
+          outerRadius={150}
+          fill="#8884d8"
+          dataKey="value"
+        >
+          {getDelayDaysData().map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+         ))}
+        </Pie>
+      </PieChart>
+    </div>
+  </div>
+)}
+
+{/* {selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2>{selectedCustomer} - Delay Days Distribution</h2>
+    <div className="center">
+      <PieChart width={700} height={400}>
+        <Pie
+          data={getDelayDaysData()}
+          cx={300}
+          cy={200}
+          labelLine={false}
+          label={({ name, value }) => `${name}: ${value}`}
+          outerRadius={150}
+          fill="#8884d8"
+          dataKey="value"
+        >
+          {getDelayDaysData().map((entry, index) => (
+            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+         ))}
+        </Pie>
+      </PieChart>
+    </div>
+  </div>
+)} */}
 
 
     </div>
