@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './customerList.css';
-import { BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import { BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
 const CustomerList = () => {
@@ -358,7 +358,7 @@ function capitalizeEveryWord(text) {
 
 {selectedCustomer && isSubmitted && transactionInfo && (
   <div className="chart-container">
-        <h2>How is the currency distributed for {capitalizeEveryWord(selectedCustomer)}?</h2>
+        <h2>What is the payment Method distribution for {capitalizeEveryWord(selectedCustomer)}?</h2>
     <div className="center">
     <PieChart width={700} height={400}>
       <Pie
@@ -478,6 +478,8 @@ function capitalizeEveryWord(text) {
   </div>
   </div>
 )}
+
+
 
 
 {/* {selectedCustomer && isSubmitted && transactionInfo && (
