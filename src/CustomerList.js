@@ -78,7 +78,16 @@ const formatDate = (date) => {
   return new Date(date).toLocaleDateString('en-US', options);
 };
 
-const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
+// const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
+const COLORS = [
+  '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF',
+  '#FF6F61', '#6B4226', '#E63946', '#F1FAEE', '#A8DADC',
+  '#457B9D', '#1D3557', '#F4A261', '#2A9D8F', '#D7263D',
+  '#F4A261', '#D36582', '#F28482', '#FAD02E', '#6A0572',
+];
+
+// ...
+
 
 
 const getPaymentMethodData = () => {
@@ -427,27 +436,9 @@ function capitalizeEveryWord(text) {
 
 
 
-{selectedCustomer && isSubmitted && customerInfo && (
-  <div className="chart-container">
-    <h2>{selectedCustomer} - Payment Ratio vs. Number of Missed Payments</h2>
-    <div className="center">
-    <BarChart width={600} height={300} data={[customerInfo]}>
-      <CartesianGrid stroke="#ccc" />
-      <XAxis dataKey="customer_name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar type="monotone" dataKey="payment_ratio" fill="#8884d8" name="Payment Ratio" />
-      <Bar type="monotone" dataKey="missed_payments" fill="#82ca9d" name="Number of Missed Payments" />
-    </BarChart>
-  </div>
-  </div>
-)}
-
-
 {selectedCustomer && isSubmitted && transactionInfo && (
   <div className="chart-container">
-    <h2>{capitalizeEveryWord(selectedCustomer)} - Delay Days Distribution</h2>
+    <h2>What is the Distribution of Payment for {capitalizeEveryWord(selectedCustomer)}?</h2>
     <div className="center">
       <PieChart width={700} height={400}>
         <Pie
@@ -470,6 +461,24 @@ function capitalizeEveryWord(text) {
     </div>
   </div>
 )}
+
+{selectedCustomer && isSubmitted && customerInfo && (
+  <div className="chart-container">
+    <h2>How does Payment Ratio Relate to the Number of Missed Payments for {capitalizeEveryWord(selectedCustomer)}?</h2>
+    <div className="center">
+    <BarChart width={600} height={300} data={[customerInfo]}>
+      <CartesianGrid stroke="#ccc" />
+      <XAxis dataKey="customer_name" />
+      <YAxis />
+      <Tooltip />
+      <Legend />
+      <Bar type="monotone" dataKey="payment_ratio" fill="#8884d8" name="Payment Ratio" />
+      <Bar type="monotone" dataKey="missed_payments" fill="#82ca9d" name="Number of Missed Payments" />
+    </BarChart>
+  </div>
+  </div>
+)}
+
 
 {/* {selectedCustomer && isSubmitted && transactionInfo && (
   <div className="chart-container">
