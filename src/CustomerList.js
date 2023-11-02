@@ -12,11 +12,13 @@ const CustomerList = () => {
   const [customerData, setCustomerData] = useState(null);
   const [currencySymbol, setCurrencySymbol] = useState(''); // Initialize currencySymbol state
 
+  const apiUrl = 'https://viebeg-server.onrender.com';
 
   useEffect(() => {
     const fetchCustomerNames = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/customers');
+        const response = await fetch(`${apiUrl}/api/customers`);
+
 
         const data = await response?.json();
         setCustomerNames(data.map((customer) => customer.customer_name));
@@ -34,7 +36,8 @@ const CustomerList = () => {
     setIsSubmitted(false);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/customers?name=${customerName}`);
+      const response = await fetch(`${apiUrl}/api/customers?name=${customerName}`);
+
       const data = await response.json();
 
       if (data && data.length > 0) {
@@ -43,11 +46,13 @@ const CustomerList = () => {
         if (selectedCustomerData) {
           const custId = selectedCustomerData.cust_id;
 
-          const creditScoreResponse = await fetch(`http://localhost:5000/api/customers/${custId}/creditScore`);
+          const creditScoreResponse = await fetch(`${apiUrl}/api/customers/${custId}/creditScore`);
+
           const creditScoreData = await creditScoreResponse.json();
 
           // Fetch transaction data for the selected customer
-          const transactionsResponse = await fetch(`http://localhost:5000/api/customers/${custId}/transactions`);
+          const transactionsResponse = await fetch(`${apiUrl}/api/customers/${custId}/transactions`);
+
           const transactionsData = await transactionsResponse.json();
 
           // Set both credit score and transaction info separately
