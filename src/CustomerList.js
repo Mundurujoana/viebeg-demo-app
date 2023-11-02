@@ -11,24 +11,33 @@ const CustomerList = () => {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [customerData, setCustomerData] = useState(null);
   const [currencySymbol, setCurrencySymbol] = useState(''); // Initialize currencySymbol state
+  const [isLoading, setIsLoading] = useState(true);
+
 
   const apiUrl = 'https://viebeg-server.onrender.com';
+  
 
   useEffect(() => {
     const fetchCustomerNames = async () => {
       try {
+        setIsLoading(true); // Set isLoading to true before fetching data
+  
         const response = await fetch(`${apiUrl}/api/customers`);
-
-
         const data = await response?.json();
         setCustomerNames(data.map((customer) => customer.customer_name));
       } catch (error) {
         console.error('Error fetching customer names:', error);
+      } finally {
+        setIsLoading(false); // Set isLoading to false after fetching data
       }
     };
-
+  
     fetchCustomerNames();
   }, []);
+  
+
+
+
 
   const handleSelectChange = async (e) => {
     const customerName = e.target.value;
@@ -325,6 +334,10 @@ const groupDataByYearAndPaymentStatus = (data) => {
 
   return (
     <div className="customer-list-container">
+         {isLoading ? (
+        <div className="loading-spinner"></div>
+      ) : (
+      <>
       <h2>Health Facilities</h2>
       <form onSubmit={handleSubmit}>
         <div>
@@ -342,7 +355,7 @@ const groupDataByYearAndPaymentStatus = (data) => {
           <button type="submit">Submit</button>
         </div>
       </form>
-
+     
       {selectedCustomer && isSubmitted && customerData && (
         <div className="customer-info">
           <h2>{selectedCustomer} Location Information</h2>
@@ -784,11 +797,13 @@ const groupDataByYearAndPaymentStatus = (data) => {
   </div>
   </div>
 )}
-
-
+      </>
+      )}
+      
     </div>
   );
 };
+
 
 export default CustomerList;
 
