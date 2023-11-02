@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './customerList.css';
-import { BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Line, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 
 const CustomerList = () => {
@@ -10,12 +10,13 @@ const CustomerList = () => {
   const [transactionInfo, setTransactionInfo] = useState(null);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [customerData, setCustomerData] = useState(null);
+  const [currencySymbol, setCurrencySymbol] = useState(''); // Initialize currencySymbol state
+
 
   useEffect(() => {
     const fetchCustomerNames = async () => {
       try {
-        // const response = await fetch('http://localhost:5000/api/customers');
-        const response = await fetch('https://viebeg-server.onrender.com/api/customers');
+        const response = await fetch('http://localhost:5000/api/customers');
 
         const data = await response?.json();
         setCustomerNames(data.map((customer) => customer.customer_name));
@@ -33,7 +34,7 @@ const CustomerList = () => {
     setIsSubmitted(false);
 
     try {
-      const response = await fetch(`https://viebeg-server.onrender.com/api/customers?name=${customerName}`);
+      const response = await fetch(`http://localhost:5000/api/customers?name=${customerName}`);
       const data = await response.json();
 
       if (data && data.length > 0) {
@@ -42,17 +43,25 @@ const CustomerList = () => {
         if (selectedCustomerData) {
           const custId = selectedCustomerData.cust_id;
 
-          const creditScoreResponse = await fetch(`https://viebeg-server.onrender.com/api/customers/${custId}/creditScore`);
+          const creditScoreResponse = await fetch(`http://localhost:5000/api/customers/${custId}/creditScore`);
           const creditScoreData = await creditScoreResponse.json();
 
           // Fetch transaction data for the selected customer
-          const transactionsResponse = await fetch(`https://viebeg-server.onrender.com/api/customers/${custId}/transactions`);
+          const transactionsResponse = await fetch(`http://localhost:5000/api/customers/${custId}/transactions`);
           const transactionsData = await transactionsResponse.json();
 
           // Set both credit score and transaction info separately
           setCustomerData(selectedCustomerData);
           setCustomerInfo(creditScoreData);
           setTransactionInfo(transactionsData);
+          if (transactionsData.length > 0) {
+            // Get the currency from the first transaction in transactionsData
+            setCurrencySymbol(transactionsData[0].currency);
+          } else {
+            console.error('No transactions found for the selected customer:', customerName);
+          }          
+          console.log('cureeeeeeeeeee', currencySymbol)
+
         } else {
           console.error('No matching customer found for the selected name:', customerName);
         }
@@ -63,6 +72,10 @@ const CustomerList = () => {
       console.error('Error fetching customer information:', error);
     }
   };
+
+
+  console.log('cureeeeeeeeeee', transactionInfo)
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -232,6 +245,74 @@ function capitalizeEveryWord(text) {
 }
 
 
+const groupDataByYear = (data) => {
+  const groupedData = {};
+
+  data.forEach((transaction) => {
+    const year = new Date(transaction.date_of_payment).getFullYear();
+    const totalAmount = parseFloat(transaction.total_amount);
+
+    if (isNaN(totalAmount)) {
+      if (!groupedData[year]) {
+        groupedData[year] = 0;
+      }
+    } else {
+      if (!groupedData[year]) {
+        groupedData[year] = 0;
+      }
+      groupedData[year] += totalAmount;
+    }
+  });
+
+  // Convert the grouped data to an array of objects
+  return Object.keys(groupedData).map((year) => ({
+    year,
+    total_amount: groupedData[year],
+  }));
+};
+
+const groupDataByYearAndPaymentStatus = (data) => {
+  const groupedData = {};
+
+  data.forEach((transaction) => {
+    const year = new Date(transaction.date_of_payment).getFullYear();
+    const totalAmount = parseFloat(transaction.total_amount);
+    let paymentStatus;
+
+    const delayDays = transaction.delay_days;
+    if (delayDays === null) {
+      paymentStatus = 'MissedPayments';
+    } else if (delayDays > 0) {
+      paymentStatus = 'LatePayments';
+    } else if (delayDays < 0) {
+      paymentStatus = 'EarlyPayments';
+    } else {
+      paymentStatus = 'TimelyPayments';
+    }
+
+    if (!(year in groupedData)) {
+      groupedData[year] = {
+        MissedPayments: 0,
+        LatePayments: 0,
+        EarlyPayments: 0,
+        TimelyPayments: 0,
+      };
+    }
+
+    groupedData[year][paymentStatus] += totalAmount;
+  });
+
+  // Convert the grouped data to an array of objects
+  return Object.keys(groupedData).map((year) => ({
+    year,
+    MissedPayments: groupedData[year].MissedPayments,
+    LatePayments: groupedData[year].LatePayments,
+    EarlyPayments: groupedData[year].EarlyPayments,
+    TimelyPayments: groupedData[year].TimelyPayments,
+  }));
+};
+
+ 
 
 
 
@@ -333,27 +414,7 @@ function capitalizeEveryWord(text) {
 
 
 
-{/* {selectedCustomer && isSubmitted && transactionInfo && (
-  <div className="chart-container">
-    <h2>{selectedCustomer} - Payment Method Distribution</h2>
-    <PieChart width={600} height={300}>
-      <Pie
-        data={getPaymentMethodData()}
-        cx={300}
-        cy={150}
-        labelLine={false}
-        label={(entry) => `${entry.name}: ${entry.value}`}
-        outerRadius={100}
-        fill="#8884d8"
-        dataKey="value"
-      >
-        {getPaymentMethodData().map((entry, index) => (
-          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-        ))}
-      </Pie>
-    </PieChart>
-  </div>
-)} */}
+
 
 
 {selectedCustomer && isSubmitted && transactionInfo && (
@@ -375,7 +436,13 @@ function capitalizeEveryWord(text) {
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>
-    </PieChart>
+      <Legend
+          verticalAlign="top"
+          align="right"
+          wrapperStyle={{
+            marginTop: '-40px', // Adjust this value to move the legend up
+          }}
+        />    </PieChart>
   </div>
   </div>
 )}
@@ -401,7 +468,13 @@ function capitalizeEveryWord(text) {
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
         ))}
       </Pie>
-    </PieChart>
+      <Legend
+          verticalAlign="top"
+          align="right"
+          wrapperStyle={{
+            marginTop: '-40px', // Adjust this value to move the legend up
+          }}
+        />    </PieChart>
   </div>
   </div>
 )}
@@ -428,7 +501,13 @@ function capitalizeEveryWord(text) {
           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
           ))}
       </Pie>
-    </PieChart>
+      <Legend
+          verticalAlign="top"
+          align="right"
+          wrapperStyle={{
+            marginTop: '-40px', // Adjust this value to move the legend up
+          }}
+        />    </PieChart>
   </div>
   </div>
 )}
@@ -457,54 +536,249 @@ function capitalizeEveryWord(text) {
             <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
          ))}
         </Pie>
-      </PieChart>
+        <Legend
+          verticalAlign="top"
+          align="right"
+          wrapperStyle={{
+            marginTop: '-40px', // Adjust this value to move the legend up
+          }}
+        />      </PieChart>
     </div>
+    
   </div>
 )}
+
+
 
 {selectedCustomer && isSubmitted && customerInfo && (
   <div className="chart-container">
     <h2>How does Payment Ratio Relate to the Number of Missed Payments for {capitalizeEveryWord(selectedCustomer)}?</h2>
     <div className="center">
-    <BarChart width={600} height={300} data={[customerInfo]}>
-      <CartesianGrid stroke="#ccc" />
-      <XAxis dataKey="customer_name" />
-      <YAxis />
-      <Tooltip />
-      <Legend />
-      <Bar type="monotone" dataKey="payment_ratio" fill="#8884d8" name="Payment Ratio" />
-      <Bar type="monotone" dataKey="missed_payments" fill="#82ca9d" name="Number of Missed Payments" />
-    </BarChart>
-  </div>
+      <BarChart width={1000} height={400} data={[customerInfo]}>
+        <CartesianGrid stroke="#ccc" />
+        <XAxis dataKey="customer_name" label={{ value: 'Missed Payments', position: 'insideBottom' }} />
+        <YAxis label={{ value: 'Payment Ratio', angle: -90, position: 'insideLeft' }} />
+        <Tooltip />
+        <Legend
+          verticalAlign="top"
+          align="right"
+          wrapperStyle={{
+            marginTop: '-40px', // Adjust this value to move the legend up
+          }}
+        />
+        <Bar type="monotone" dataKey="payment_ratio" fill="#8884d8" name="Payment Ratio" />
+        <Bar type="monotone" dataKey="missed_payments" fill="#82ca9d" name="Number of Missed Payments" />
+      </BarChart>
+    </div>
   </div>
 )}
 
 
 
 
-{/* {selectedCustomer && isSubmitted && transactionInfo && (
+{selectedCustomer && isSubmitted && transactionInfo && (
   <div className="chart-container">
-    <h2>{selectedCustomer} - Delay Days Distribution</h2>
+    <h2>What is the Total Amount per Year for {capitalizeEveryWord(selectedCustomer)}?</h2>
     <div className="center">
-      <PieChart width={700} height={400}>
-        <Pie
-          data={getDelayDaysData()}
-          cx={300}
-          cy={200}
-          labelLine={false}
-          label={({ name, value }) => `${name}: ${value}`}
-          outerRadius={150}
-          fill="#8884d8"
-          dataKey="value"
-        >
-          {getDelayDaysData().map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-         ))}
-        </Pie>
-      </PieChart>
-    </div>
+    <ResponsiveContainer width="90%" height={400} >
+      <ComposedChart data={groupDataByYear(transactionInfo)}>
+      <CartesianGrid strokeDasharray="1 1" />
+        <XAxis dataKey="year" angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={80} 
+                tick={{ dy: 10 }}  label={{ value: 'Year', position: 'insideBottom', offset: 0 }} />
+        <YAxis  width={100} 
+                tick={{ dy: 10 }}  label={{ value: 'Payments', angle: -90, position: 'insideLeft' }} />
+        <Tooltip cursor={false} formatter={(value, name, props) => {
+  return currencySymbol ? ` ${currencySymbol} ${Number(value).toFixed(1)}` : `Total Amount: ${Number(value).toFixed(1)}`;
+}} />
+<Legend
+  verticalAlign="top"
+  align="right"
+  wrapperStyle={{
+    marginTop: '-40px', // Adjust this value to move the legend up
+  }}
+/>
+        <Bar dataKey="total_amount" fill="#8884d8" name="Total Amount" barSize={120}  />
+        <Line type="monotone" dataKey="total_amount" stroke="#82ca9d" name="Total Amount" />
+      </ComposedChart>
+    </ResponsiveContainer>
   </div>
-)} */}
+  </div>
+)}
+
+
+
+{selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2> What Is the Payment Status Variation Over the Years for {capitalizeEveryWord(selectedCustomer)}? </h2>
+    <div className="center">
+    <ResponsiveContainer width="90%" height={400}>
+      <ComposedChart data={groupDataByYearAndPaymentStatus(transactionInfo)} width={700} height={400}>
+      <CartesianGrid strokeDasharray="1 1" />
+        <XAxis dataKey="year" angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={80} 
+                tick={{ dy: 10 }}  label={{ value: 'Year', position: 'insideBottom', offset: -2 }} />    
+                  <YAxis  width={100} 
+                tick={{ dy: 10 }} label={{ value: 'Payments', angle: -90, position: 'insideLeft' }} />
+        <Tooltip cursor={false} formatter={(value, name, props) => {
+          return currencySymbol ? ` ${currencySymbol} ${Number(value).toFixed(1)}` : `Total Amount: ${Number(value).toFixed(1)}`;
+        }} />
+<Legend
+  verticalAlign="top"
+  align="right"
+  wrapperStyle={{
+    marginTop: '-40px', // Adjust this value to move the legend up
+  }}
+/>
+        <Bar dataKey="MissedPayments" fill="#FF5733" name="Missed Payments"  barSize={120} />
+        <Bar dataKey="LatePayments" fill="#FFD700" name="Late Payments"  barSize={120}  />
+        <Bar dataKey="EarlyPayments" fill="#228B22" name="Early Payments"   barSize={120}/>
+        <Bar dataKey="TimelyPayments" fill="#5F9EA0" name="Timely Payments"  barSize={120} />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div>
+  </div>
+)}
+
+
+
+{selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2> What Is the Incidence of Missed Payments Over the Years for {capitalizeEveryWord(selectedCustomer)}? </h2>
+    <div className="center">
+    <ResponsiveContainer width="90%" height={400}>
+      <ComposedChart data={groupDataByYearAndPaymentStatus(transactionInfo)} >
+      <CartesianGrid strokeDasharray="1 1" />
+        <XAxis dataKey="year" angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={80} 
+                tick={{ dy: 10 }}  label={{ value: 'Year', position: 'insideBottom', offset: -2 }} />    
+                  <YAxis  width={100} 
+                tick={{ dy: 10 }} label={{ value: 'Payments', angle: -90, position: 'insideLeft' }} />
+        <Tooltip cursor={false} formatter={(value, name, props) => {
+          return currencySymbol ? ` ${currencySymbol} ${Number(value).toFixed(1)}` : `Total Amount: ${Number(value).toFixed(1)}`;
+        }} />
+<Legend
+  verticalAlign="top"
+  align="right"
+  wrapperStyle={{
+    marginTop: '-40px', // Adjust this value to move the legend up
+  }}
+/>
+        <Bar dataKey="MissedPayments" fill="#FF5733" name="Missed Payments" barSize={120}  />
+        <Line type="monotone" dataKey="MissedPayments" stroke="#82ca9d" name="Missed Payments" />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div>
+  </div>
+)}
+
+
+
+{selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2>What Is the Occurrence of Late Payments Over the Years for {capitalizeEveryWord(selectedCustomer)}?</h2>
+    <div className="center">
+    <ResponsiveContainer width="90%" height={400}>
+      <ComposedChart data={groupDataByYearAndPaymentStatus(transactionInfo)} >
+      <CartesianGrid strokeDasharray="1 1" />
+        <XAxis dataKey="year" angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={80} 
+                tick={{ dy: 10 }}  label={{ value: 'Year', position: 'insideBottom', offset: -2 }} />    
+                  <YAxis  width={100} 
+                tick={{ dy: 10 }} label={{ value: 'Payments', angle: -90, position: 'insideLeft' }} />
+        <Tooltip cursor={false} formatter={(value, name, props) => {
+          return currencySymbol ? ` ${currencySymbol} ${Number(value).toFixed(1)}` : `Total Amount: ${Number(value).toFixed(1)}`;
+        }} />
+<Legend
+  verticalAlign="top"
+  align="right"
+  wrapperStyle={{
+    marginTop: '-40px', // Adjust this value to move the legend up
+  }}
+/>
+        <Bar dataKey="LatePayments" fill="#FFD700" name="Late Payments"  barSize={120} />
+        <Line type="monotone" dataKey="LatePayments" stroke="#82ca9d" name="Late Payments" />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div>
+  </div>
+)}
+
+
+
+{selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2>What Is the Prevalence of Early Payments Over the Years for {capitalizeEveryWord(selectedCustomer)}?</h2>
+    <div className="center">
+    <ResponsiveContainer width="90%" height={400}>
+      <ComposedChart data={groupDataByYearAndPaymentStatus(transactionInfo)} >
+      <CartesianGrid strokeDasharray="1 1" />
+        <XAxis   dataKey="year" angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={80} 
+                tick={{ dy: 10  }}  label={{ value: 'Year', position: 'insideBottom', offset: -2 }} />    
+                  <YAxis  width={100} 
+                tick={{ dy: 10 }} label={{ value: 'Payments', angle: -90, position: 'insideLeft' }} />
+        <Tooltip cursor={false} formatter={(value, name, props) => {
+          return currencySymbol ? ` ${currencySymbol} ${Number(value).toFixed(1)}` : `Total Amount: ${Number(value).toFixed(1)}`;
+        }} />
+<Legend
+  verticalAlign="top"
+  align="right"
+  wrapperStyle={{
+    marginTop: '-40px', // Adjust this value to move the legend up
+  }}
+/>
+        <Bar dataKey="EarlyPayments" fill="#228B22" name="Early Payments"  barSize={120}  />
+        <Line type="monotone" dataKey="EarlyPayments" stroke="#82ca9d" name="Early Payments" />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div>
+  </div>
+)}
+
+
+
+{selectedCustomer && isSubmitted && transactionInfo && (
+  <div className="chart-container">
+    <h2>What Is the Frequency of Timely Payments Over the Years for {capitalizeEveryWord(selectedCustomer)}?</h2>
+    <div className="center">
+    <ResponsiveContainer width="90%" height={400}>
+      <ComposedChart data={groupDataByYearAndPaymentStatus(transactionInfo)}>
+        <CartesianGrid strokeDasharray="1 1" />
+        <XAxis  dataKey="year" angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={80} 
+                tick={{ dy: 10 }}  label={{ value: 'Year',  position: 'insideBottom', offset: -2 , style: { fontWeight: 'normal' } }} />    
+                  <YAxis  width={100} 
+                tick={{ dy: 10 }} label={{ value: 'Payments', angle: -90, position: 'insideLeft' }} />
+        <Tooltip cursor={false} formatter={(value, name, props) => {
+          return currencySymbol ? ` ${currencySymbol} ${Number(value).toFixed(1)}` : `Total Amount: ${Number(value).toFixed(1)}`;
+        }} />
+<Legend
+  verticalAlign="top"
+  align="right"
+  wrapperStyle={{
+    marginTop: '-40px', // Adjust this value to move the legend up
+  }}
+/>
+        <Bar dataKey="TimelyPayments" fill="#5F9EA0" name="Timely Payments" barSize={120}  />
+        <Line type="monotone" dataKey="TimelyPayments" stroke="#82ca9d" name="Timely Payments" />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div>
+  </div>
+)}
 
 
     </div>
@@ -512,3 +786,5 @@ function capitalizeEveryWord(text) {
 };
 
 export default CustomerList;
+
+
