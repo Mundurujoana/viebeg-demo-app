@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './customerList.css';
 import { ComposedChart, Line, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { useNavigate,  Link  } from 'react-router-dom';
+
 
 
 const CustomerList = () => {
@@ -12,11 +14,97 @@ const CustomerList = () => {
   const [customerData, setCustomerData] = useState(null);
   const [currencySymbol, setCurrencySymbol] = useState(''); // Initialize currencySymbol state
   const [isLoading, setIsLoading] = useState(true);
+  const [districts, setDistricts] = useState([]); // Add districts state
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [districtCreditScore, setDistrictCreditScore] = useState(null);
+  const [creditScores, setCreditScores] = useState(null); // Add creditScores state
+const [districtCounts, setDistrictCounts] = useState([]);
+const [districtOccurrences, setDistrictOccurrences] = useState([]);
+const navigate = useNavigate(); // Get access to the navigate function
+const [isDistrictSubmitted, setIsDistrictSubmitted] = useState(false);
+
+
+  
 
 
   const apiUrl = 'https://viebeg-server.onrender.com';
+
+  useEffect(() => {
+    const fetchDistricts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/districts');
+        const data = await response.json();
+        setDistrictOccurrences(data);
+      } catch (error) {
+        console.error('Error fetching district data:', error);
+      }
+    };
+
+    fetchDistricts();
+  }, []);
+
+
+  
   
 
+  const handleDistrictSelectChange = async (e) => {
+    const district = e.target.value;
+    setSelectedDistrict(district);
+    setIsSubmitted(false);
+  
+    try {
+      // Fetch credit score for the selected district
+      await fetchCreditScore(district);
+    } catch (error) {
+      console.error('Error fetching district credit score:', error);
+    }
+  };
+
+  
+  const handleDistrictSubmit = (e) => {
+    e.preventDefault();
+    setIsDistrictSubmitted(true);
+  };
+  
+
+
+  const fetchCreditScore = async (district) => {
+    try {
+      const response = await fetch(`${apiUrl}/api/customers?district=${district}`);
+      const data = await response.json();
+
+      if (data && data.length > 0) {
+        const customersWithSelectedDistrict = data.filter((customer) => customer.location_district === district);
+
+        if (customersWithSelectedDistrict.length > 0) {
+          const fetchedCreditScores = [];
+
+          for (const selectedCustomerData of customersWithSelectedDistrict) {
+            const custId = selectedCustomerData.cust_id;
+            const creditScoreResponse = await fetch(`${apiUrl}/api/customers/${custId}/creditScore`);
+            const creditScoreData = await creditScoreResponse.json();
+
+            fetchedCreditScores.push({
+              customerName: selectedCustomerData.customer_name,
+              ...creditScoreData,
+            });
+          }
+
+          setCreditScores(fetchedCreditScores);
+          setIsSubmitted(true);
+        } else {
+          console.error('No customers found for the specified district.');
+        }
+      } else {
+        console.error('No customers found for the specified district.');
+      }
+    } catch (error) {
+      console.error('Error fetching customer data:', error);
+    }
+  };
+
+  
+  
   useEffect(() => {
     const fetchCustomerNames = async () => {
       try {
@@ -64,6 +152,8 @@ const CustomerList = () => {
 
           const transactionsData = await transactionsResponse.json();
 
+          
+
           // Set both credit score and transaction info separately
           setCustomerData(selectedCustomerData);
           setCustomerInfo(creditScoreData);
@@ -75,6 +165,11 @@ const CustomerList = () => {
             console.error('No transactions found for the selected customer:', customerName);
           }          
           console.log('cureeeeeeeeeee', currencySymbol)
+
+
+           // Use navigate to navigate to a new page with the selected customer
+        
+           navigate(`/customer/${selectedCustomer}`);
 
         } else {
           console.error('No matching customer found for the selected name:', customerName);
@@ -88,7 +183,6 @@ const CustomerList = () => {
   };
 
 
-  console.log('cureeeeeeeeeee', transactionInfo)
 
 
   const handleSubmit = (e) => {
@@ -327,8 +421,21 @@ const groupDataByYearAndPaymentStatus = (data) => {
 };
 
  
+ // Function to fetch district names from the server
+ const fetchDistrictsName = async () => {
+  try {
+    const response = await fetch('http://localhost:5000/api/districts-names'); // Update the URL
+    const data = await response.json();
+    setDistricts(data);
+  } catch (error) {
+    console.error('Error fetching district data:', error);
+  }
+};
 
-
+// Call the fetchDistricts function when the component mounts
+useEffect(() => {
+  fetchDistrictsName();
+}, []);
 
 
 
@@ -338,12 +445,24 @@ const groupDataByYearAndPaymentStatus = (data) => {
         <div className="loading-spinner"></div>
       ) : (
       <>
+
+{/* <div>
+      <h2>District Occurrences</h2>
+      <ul>
+        {Object.entries(districtOccurrences).map(([district, occurrences]) => (
+          <li key={district}>
+            {district}: {occurrences} occurrences
+          </li>
+        ))}
+      </ul>
+    </div> */}
+
       <h2>Health Facilities</h2>
       <form onSubmit={handleSubmit}>
         <div>
           <label>Select a facility:</label>
           <select value={selectedCustomer} onChange={handleSelectChange}>
-            <option value="">Select a customer</option>
+            <option value="">Select a Health Facility </option>
             {customerNames.sort().map((name, index) => (
               <option key={index} value={name}>
                 {name}
@@ -355,6 +474,8 @@ const groupDataByYearAndPaymentStatus = (data) => {
           <button type="submit">Submit</button>
         </div>
       </form>
+
+
      
       {selectedCustomer && isSubmitted && customerData && (
         <div className="customer-info">
@@ -797,6 +918,11 @@ const groupDataByYearAndPaymentStatus = (data) => {
   </div>
   </div>
 )}
+
+
+
+
+
       </>
       )}
       
@@ -806,5 +932,6 @@ const groupDataByYearAndPaymentStatus = (data) => {
 
 
 export default CustomerList;
+
 
 

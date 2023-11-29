@@ -1,0 +1,67 @@
+/* dashboard.css */
+
+.dashboard {
+          display: flex;
+        }
+        
+        .sidebar {
+          width: 20%;
+          background-color: #F0F2F6;
+          padding: 20px;
+          color: #575960;
+          height: 100vh;
+          padding-top: 200px;
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        
+        .sidebar h2 {
+          margin-bottom: 10px;
+          cursor: pointer;
+          transition: color 0.3s;
+        }
+        
+        .sidebar h2:hover {
+          color: #61dafb;
+        }
+        
+        .content {
+          width: 100%;
+          padding: 20px;
+        }
+        
+        .with-sidebar .content {
+          width: 80%;
+        }
+        
+        .without-sidebar .sidebar {
+          display: none;
+        }
+        
+
+  
+        /* Add styling for the icon */
+.show-sidebar {
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          color: #007bff; /* Adjust the color as needed */
+        }
+        
+        .show-sidebar svg {
+          margin-right: 5px; /* Adjust spacing between icon and text */
+        }
+        
+        .show-sidebar:hover {
+          color: #0056b3; /* Adjust the hover color as needed */
+        }
+        
+        /* Add this style to your CSS */
+.center-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          height: 100vh; /* Adjust this to fit your layout */
+        }
+        
