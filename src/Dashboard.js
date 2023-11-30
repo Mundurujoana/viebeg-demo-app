@@ -33,21 +33,9 @@ const [isDistrictLoading, setIsDistrictLoading] = useState(false);
 
 
 
-const apiUrl = 'https://viebeg-server.onrender.com';
+const apiUrl = 'https://kap-viebeg-server.onrender.com';
 
-useEffect(() => {
-  const fetchDistricts = async () => {
-    try {
-      const response = await fetch('http://localhost:5000/api/districts');
-      const data = await response.json();
-      setDistrictOccurrences(data);
-    } catch (error) {
-      console.error('Error fetching district data:', error);
-    }
-  };
 
-  fetchDistricts();
-}, []);
 
 
 
