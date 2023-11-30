@@ -35,7 +35,19 @@ const [isDistrictLoading, setIsDistrictLoading] = useState(false);
 
 const apiUrl = 'https://kap-viebeg-server.onrender.com';
 
+useEffect(() => {
+  const fetchDistricts = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/districts`);
+      const data = await response.json();
+      setDistrictOccurrences(data);
+    } catch (error) {
+      console.error('Error fetching district data:', error);
+    }
+  };
 
+  fetchDistricts();
+}, []);
 
 
 
@@ -211,7 +223,7 @@ return new Date(date).toLocaleDateString('en-US', options);
 // Function to fetch district names from the server
 const fetchDistrictsName = async () => {
 try {
-  const response = await fetch('http://localhost:5000/api/districts-names'); // Update the URL
+  const response = await fetch(`${apiUrl}/api/districts-names`);
   const data = await response.json();
   setDistricts(data);
 } catch (error) {
