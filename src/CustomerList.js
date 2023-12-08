@@ -232,26 +232,7 @@ const getPaymentMethodData = () => {
   return [];
 };
 
-// const getPaymentStatusData = () => {
-//   if (transactionInfo) {
-//     const paymentStatuses = {};
 
-//     transactionInfo.forEach((transaction) => {
-//       const paymentStatus = transaction.payment_status || 'Did Not Pay';
-//       if (paymentStatus in paymentStatuses) {
-//         paymentStatuses[paymentStatus] += 1;
-//       } else {
-//         paymentStatuses[paymentStatus] = 1;
-//       }
-//     });
-
-//     return Object.keys(paymentStatuses).map((status) => ({
-//       name: status,
-//       value: paymentStatuses[status],
-//     }));
-//   }
-//   return [];
-// };
 
 const getPaymentStatusData = () => {
   if (transactionInfo) {

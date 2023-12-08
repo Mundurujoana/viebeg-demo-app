@@ -1,16 +1,24 @@
 // Dashboard.js
 import React, { useState, useEffect } from 'react';
-import { ComposedChart, Line, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { ComposedChart, Line, BarChart, Bar, PieChart, Pie, Cell, CartesianGrid, XAxis,
+YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { useNavigate,  Link  } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
+import DistrictCharts from './DistrictCharts'
+import ProvinceCharts from './ProvinceCharts'
+import SectorCharts from './SectorCharts'
 
 
 import './dashboard.css';
 
+
+
+
+
 const Dashboard = () => {
 
-          
+  const [provinceOccurrences, setProvinceOccurrences] = useState({});
   const [customerNames, setCustomerNames] = useState([]);
   const [selectedCustomer, setSelectedCustomer] = useState('');
   const [customerInfo, setCustomerInfo] = useState(null);
@@ -23,17 +31,201 @@ const Dashboard = () => {
   const [selectedDistrict, setSelectedDistrict] = useState('');
   const [districtCreditScore, setDistrictCreditScore] = useState(null);
   const [creditScores, setCreditScores] = useState(null); // Add creditScores state
-const [districtCounts, setDistrictCounts] = useState([]);
-const [districtOccurrences, setDistrictOccurrences] = useState([]);
-const navigate = useNavigate(); // Get access to the navigate function
-const [selectedContent, setSelectedContent] = useState('default');
-const [isDistrictSubmitted, setIsDistrictSubmitted] = useState(false);
+  const [districtCounts, setDistrictCounts] = useState([]);
+  const [districtOccurrences, setDistrictOccurrences] = useState([]);
+  const navigate = useNavigate(); // Get access to the navigate function
+  const [selectedContent, setSelectedContent] = useState('default');
+  const [isDistrictSubmitted, setIsDistrictSubmitted] = useState(false);
+  const [isDistrictLoading, setIsDistrictLoading] = useState(false);
+  const [selectedProvince, setSelectedProvince] = useState('');
+  const [provinceCreditScore, setProvinceCreditScore] = useState(null);
+  const [provinces, setProvinces] = useState([]); // Add this line for provinces
+  const [selectedSector, setSelectedSector] = useState('');
+  const [sectorCreditScore, setSectorCreditScore] = useState(null);
+  const [sectors, setSectors] = useState([]); // Add this line for sectors
 
-const [isDistrictLoading, setIsDistrictLoading] = useState(false);
+
+  const apiUrl = 'http://localhost:5000';
+
+
+  
+
+
+//PROVINCE
+
+const handleProvinceSelectChange = async (e) => {
+  const province = e.target.value;
+  setSelectedProvince(province);
+  setIsDistrictSubmitted(false);
+
+  // Reset province credit score when selecting a new province
+  setProvinceCreditScore(null);
+
+  // No need to fetch province credit score here, it will be fetched on form submit
+};
+
+const handleProvinceSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    // Fetch credit score for the selected province
+    await fetchProvinceCreditScore(selectedProvince);
+  } catch (error) {
+    console.error('Error fetching province credit score:', error);
+  } finally {
+    setIsSubmitted(true); // Set isSubmitted to true when the form is submitted
+  }
+};
+
+
+const fetchProvinceCreditScore = async () => {
+  try {
+    setIsDistrictLoading(true);
+
+    // Assuming your API returns an array of customer data for the selected province
+    const response = await fetch(`${apiUrl}/api/customers?province=${selectedProvince}`);
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+      const customersWithSelectedProvince = data.filter((customer) => customer.location_province === selectedProvince);
+
+      if (customersWithSelectedProvince.length > 0) {
+        const creditScorePromises = customersWithSelectedProvince.map(async (selectedCustomerData) => {
+          const custId = selectedCustomerData.cust_id;
+          const creditScoreResponse = await fetch(`${apiUrl}/api/customers/${custId}/creditScore`);
+          const creditScoreData = await creditScoreResponse.json();
+
+          return {
+            customerName: selectedCustomerData.customer_name,
+            ...creditScoreData,
+          };
+        });
+
+        const fetchedCreditScores = await Promise.all(creditScorePromises);
+
+        setProvinceCreditScore(fetchedCreditScores);
+        setIsDistrictSubmitted(true);
+      } else {
+        console.error('No customers found for the specified province.');
+      }
+    } else {
+      console.error('No customers found for the specified province.');
+    }
+
+    setIsDistrictLoading(false);
+  } catch (error) {
+    setIsDistrictLoading(false);
+    console.error('Error fetching province credit score:', error);
+  }
+};
+
+
+// Fetch provinces data
+useEffect(() => {
+  const fetchProvinces = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/province-names`);
+      const data = await response?.json();
+      console.log('Province names:', data);
+      setProvinces(data);
+      
+    } catch (error) {
+      console.error('Error fetching province data:', error);
+    }
+  };
+
+  fetchProvinces();
+}, []);
+
+
+//SECTOR
+
+// Similar to handleProvinceSelectChange
+const handleSectorSelectChange = async (e) => {
+  const sector = e.target.value;
+  setSelectedSector(sector);
+  setIsDistrictSubmitted(false);
+
+  // Reset sector credit score when selecting a new sector
+  setSectorCreditScore(null);
+
+  // No need to fetch sector credit score here, it will be fetched on form submit
+};
+
+// Similar to handleProvinceSubmit
+const handleSectorSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    // Fetch credit score for the selected sector
+    await fetchSectorCreditScore(selectedSector);
+  } catch (error) {
+    console.error('Error fetching sector credit score:', error);
+  } finally {
+    setIsSubmitted(true); // Set isSubmitted to true when the form is submitted
+  }
+};
+
+// Similar to fetchProvinceCreditScore
+const fetchSectorCreditScore = async () => {
+  try {
+    setIsDistrictLoading(true);
+
+    // Assuming your API returns an array of customer data for the selected sector
+    const response = await fetch(`${apiUrl}/api/customers?sector=${selectedSector}`);
+    const data = await response.json();
+
+    if (data && data.length > 0) {
+      const customersWithSelectedSector = data.filter((customer) => customer.location_sector === selectedSector);
+
+      if (customersWithSelectedSector.length > 0) {
+        const creditScorePromises = customersWithSelectedSector.map(async (selectedCustomerData) => {
+          const custId = selectedCustomerData.cust_id;
+          const creditScoreResponse = await fetch(`${apiUrl}/api/customers/${custId}/creditScore`);
+          const creditScoreData = await creditScoreResponse.json();
+
+          return {
+            customerName: selectedCustomerData.customer_name,
+            ...creditScoreData,
+          };
+        });
+
+        const fetchedCreditScores = await Promise.all(creditScorePromises);
+
+        setSectorCreditScore(fetchedCreditScores);
+        setIsDistrictSubmitted(true);
+      } else {
+        console.error('No customers found for the specified sector.');
+      }
+    } else {
+      console.error('No customers found for the specified sector.');
+    }
+
+    setIsDistrictLoading(false);
+  } catch (error) {
+    setIsDistrictLoading(false);
+    console.error('Error fetching sector credit score:', error);
+  }
+};
+
+
+// Fetch sectors data
+useEffect(() => {
+  const fetchSectors = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/api/sector-names`);
+      const data = await response.json();
+      setSectors(data);
+    } catch (error) {
+      console.error('Error fetching sector data:', error);
+    }
+  };
+
+  fetchSectors();
+}, []);
 
 
 
-const apiUrl = 'https://kap-viebeg-server.onrender.com';
 
 useEffect(() => {
   const fetchDistricts = async () => {
@@ -77,13 +269,8 @@ const handleDistrictSelectChange = async (e) => {
           }
         };
         
-        
-        
 
 
-
-
-// Other functions...
 
 const fetchDistrictCreditScore = async () => {
           try {
@@ -248,19 +435,33 @@ const handleShowSidebar = () => {
           };
         
 
+  
+        
+        useEffect(() => {
+          const fetchProvinceOccurrences = async () => {
+            try {
+              const response = await fetch(`${apiUrl}/api/province-occurrences`);
+              const data = await response.json();
+              setProvinceOccurrences(data);
+            } catch (error) {
+              console.error('Error fetching province occurrences:', error);
+            }
+          };
+        
+          fetchProvinceOccurrences();
+        }, []);
+        
+        
           
           // const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF'];
 const COLORS = [
-          '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF',
-          '#FF6F61', '#6B4226', '#E63946', '#F1FAEE', '#A8DADC',
-          '#457B9D', '#1D3557', '#F4A261', '#2A9D8F', '#D7263D',
-          '#F4A261', '#D36582', '#F28482', '#FAD02E', '#6A0572',
-        ];
-        
-        // ...
-        
-        
-        
+  '#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF',
+  '#FF6F61', '#6B4226', '#E63946', '#F1FAEE', '#A8DADC',
+  '#457B9D', '#1D3557', '#F4A261', '#2A9D8F', '#D7263D',
+  '#F4A261', '#D36582', '#F28482', '#FAD02E', '#6A0572',
+];
+
+
         const getPaymentMethodData = () => {
           if (transactionInfo) {
             const paymentMethods = {};
@@ -282,26 +483,7 @@ const COLORS = [
           return [];
         };
         
-        // const getPaymentStatusData = () => {
-        //   if (transactionInfo) {
-        //     const paymentStatuses = {};
         
-        //     transactionInfo.forEach((transaction) => {
-        //       const paymentStatus = transaction.payment_status || 'Did Not Pay';
-        //       if (paymentStatus in paymentStatuses) {
-        //         paymentStatuses[paymentStatus] += 1;
-        //       } else {
-        //         paymentStatuses[paymentStatus] = 1;
-        //       }
-        //     });
-        
-        //     return Object.keys(paymentStatuses).map((status) => ({
-        //       name: status,
-        //       value: paymentStatuses[status],
-        //     }));
-        //   }
-        //   return [];
-        // };
         
         const getPaymentStatusData = () => {
           if (transactionInfo) {
@@ -469,13 +651,258 @@ const COLORS = [
             TimelyPayments: groupedData[year].TimelyPayments,
           }));
         };
-        
-         
+
+
+
+        // REGION CHARTS CREDITSCORE
+  // Function to get data for the top three customers
+  const getDistrictTopTotalCreditScore  = () => {
+    const sortedData = [...districtCreditScore].sort((a, b) => a.credit_score - b.credit_score);
+    const topTotalCreditScore = sortedData.slice(0, 5);
+
+    return topTotalCreditScore.map((customer) => ({
+      customerName: customer.customerName,
+      creditScore: customer.credit_score,
+    }));
+  };
+       
+       // Function to get data for the top three customers
+  const getProvinceTotalCreditScore  = () => {
+    const sortedData = [...provinceCreditScore].sort((a, b) => a.credit_score - b.credit_score);
+    const totalCreditScore = sortedData.slice(0, 5);
+
+    return totalCreditScore.map((customer) => ({
+      customerName: customer.customerName,
+      creditScore: customer.credit_score,
+    }));
+  };
+
+  // Function to get data for the top three customers
+  const getSectorTotalCreditScore = () => {
+    const sortedData = [...sectorCreditScore].sort((a, b) => a.credit_score - b.credit_score);
+    const totalCreditScore = sortedData.slice(0, 5);
+
+    return totalCreditScore.map((customer) => ({
+      customerName: customer.customerName,
+      creditScore: customer.credit_score,
+    }));
+  };
+  
+
+  // TOTAL AMOUNT
+  // Function to get data for the top three customers
+  const getDistrictTotalAmountData = () => {
+    const sortedData = [...districtCreditScore].sort((a, b) => a.total_amount - b.total_amount);
+    const totalAmount = sortedData.slice(0, 3);
+
+    return totalAmount.map((customer) => ({
+      customerName: customer.customerName,
+      totalAmount: customer.total_amount
+    }));
+  };
+
+  const getProvinceTotalAmountData = () => {
+    const sortedData = [...provinceCreditScore].sort((a, b) => a.total_amount - b.total_amount);
+    const totalAmount = sortedData.slice(0, 5);
+
+    return totalAmount.map((customer) => ({
+      customerName: customer.customerName,
+      totalAmount: customer.total_amount
+    }));
+  };
+
+  const getSectorTotalAmountData = () => {
+    const sortedData = [...sectorCreditScore].sort((a, b) => a.total_amount - b.total_amount);
+    const totalAmount = sortedData.slice(0, 5);
+
+    return totalAmount.map((customer) => ({
+      customerName: customer.customerName,
+      totalAmount: customer.total_amount
+    }));
+  };
+
+  
+  // PAYMENT STATUS
+  const getDistrictPaymentStatusData = () => {
+  if (districtCreditScore) {
+    const paymentStatusData = {};
+
+    districtCreditScore.forEach((customer) => {
+      const delayDays = customer.delay_days;
+
+      let paymentStatus;
+      if (delayDays === null) {
+        paymentStatus = 'Missed Payments';
+      } else if (delayDays > 0) {
+        paymentStatus = 'Late Payments';
+      } else if (delayDays < 0) {
+        paymentStatus = 'Early Payments';
+      } else {
+        paymentStatus = 'Timely Payments';
+      }
+
+      if (paymentStatus in paymentStatusData) {
+        paymentStatusData[paymentStatus] += 1;
+      } else {
+        paymentStatusData[paymentStatus] = 1;
+      }
+    });
+
+    // Convert the payment status data to an array of objects
+    return Object.keys(paymentStatusData).map((status) => ({
+      name: status,
+      value: paymentStatusData[status],
+    }));
+  }
+
+  return [];
+};
+
+const getProvincePaymentStatusData = () => {
+  if (provinceCreditScore) {
+    const paymentStatusData = {};
+
+    provinceCreditScore.forEach((customer) => {
+      const delayDays = customer.delay_days;
+
+      let paymentStatus;
+      if (delayDays === null) {
+        paymentStatus = 'Missed Payments';
+      } else if (delayDays > 0) {
+        paymentStatus = 'Late Payments';
+      } else if (delayDays < 0) {
+        paymentStatus = 'Early Payments';
+      } else {
+        paymentStatus = 'Timely Payments';
+      }
+
+      if (paymentStatus in paymentStatusData) {
+        paymentStatusData[paymentStatus] += 1;
+      } else {
+        paymentStatusData[paymentStatus] = 1;
+      }
+    });
+
+    // Convert the payment status data to an array of objects
+    return Object.keys(paymentStatusData).map((status) => ({
+      name: status,
+      value: paymentStatusData[status],
+    }));
+  }
+
+  return [];
+};
+
+const getSectorPaymentStatusData = () => {
+  if (sectorCreditScore) {
+    const paymentStatusData = {};
+
+    sectorCreditScore.forEach((customer) => {
+      const delayDays = customer.delay_days;
+
+      let paymentStatus;
+      if (delayDays === null) {
+        paymentStatus = 'Missed Payments';
+      } else if (delayDays > 0) {
+        paymentStatus = 'Late Payments';
+      } else if (delayDays < 0) {
+        paymentStatus = 'Early Payments';
+      } else {
+        paymentStatus = 'Timely Payments';
+      }
+
+      if (paymentStatus in paymentStatusData) {
+        paymentStatusData[paymentStatus] += 1;
+      } else {
+        paymentStatusData[paymentStatus] = 1;
+      }
+    });
+
+    // Convert the payment status data to an array of objects
+    return Object.keys(paymentStatusData).map((status) => ({
+      name: status,
+      value: paymentStatusData[status],
+    }));
+  }
+
+  return [];
+};
+
+
+
+const getDistrictCreditCategoryData = () => {
+  if (districtCreditScore) {
+    const creditCategories = {};
+  
+    districtCreditScore.forEach((score) => {
+      const category = score.credit_category || 'Unknown';
+      if (category in creditCategories) {
+        creditCategories[category] += 1;
+      } else {
+        creditCategories[category] = 1;
+      }
+    });
+
+    return Object.keys(creditCategories).map((category) => ({
+      name: category,
+      value: creditCategories[category],
+    }));
+  }
+  return [];
+};
+
+const getProvinceCreditCategoryData = () => {
+  if (provinceCreditScore) {
+    const creditCategories = {};
+  
+    provinceCreditScore.forEach((score) => {
+      const category = score.credit_category || 'Unknown';
+      if (category in creditCategories) {
+        creditCategories[category] += 1;
+      } else {
+        creditCategories[category] = 1;
+      }
+    });
+
+    return Object.keys(creditCategories).map((category) => ({
+      name: category,
+      value: creditCategories[category],
+    }));
+  }
+  return [];
+};
+
+const getSectorCreditCategoryData = () => {
+  if (sectorCreditScore) {
+    const creditCategories = {};
+  
+    sectorCreditScore.forEach((score) => {
+      const category = score.credit_category || 'Unknown';
+      if (category in creditCategories) {
+        creditCategories[category] += 1;
+      } else {
+        creditCategories[category] = 1;
+      }
+    });
+
+    return Object.keys(creditCategories).map((category) => ({
+      name: category,
+      value: creditCategories[category],
+    }));
+  }
+  return [];
+};
+
+
+
+
           return (
             <div className={`dashboard ${isSubmitted ? 'without-sidebar' : 'with-sidebar'}`}>
               <div className="sidebar">
                 <h2 onClick={() => handleContentChange('healthFacility')}>Health Facility</h2>
-                <h2 onClick={() => handleContentChange('regions')}>Regions</h2>
+                <h2 onClick={() => handleContentChange('district')}> District </h2>
+                <h2 onClick={() => handleContentChange('province')}> Province  </h2>
+                <h2 onClick={() => handleContentChange('sector')}> Sector </h2>
               </div>
               <div className="content">
               {isSubmitted && (
@@ -484,7 +911,10 @@ const COLORS = [
           </div>
           )}
 
-            {selectedContent === 'default' && (
+
+
+           
+{selectedContent === 'default' && (
           <div>
             
             <h2>Welcome to Viebeg :  </h2>
@@ -1026,9 +1456,9 @@ const COLORS = [
             </div>
                 )}
 
+                
 
-
-{selectedContent === 'regions' && (
+{selectedContent === 'district' && (
   <div className="customer-list-container">
     {isLoading ? (
       <div className="loading-spinner"></div>
@@ -1061,7 +1491,7 @@ const COLORS = [
       {/* Display customers and credit score information only if submitted */}
 {isDistrictSubmitted && selectedDistrict && districtCreditScore && (
   <div className="credit-score-table">
-    <h2>Customers in {selectedDistrict} with Credit Score Information</h2>
+    <h2> {selectedDistrict} District Credit Score Information </h2>
     <table>
     <thead>
               <tr>
@@ -1099,11 +1529,230 @@ const COLORS = [
   </div>
 )}
 
+
+{isDistrictSubmitted && selectedDistrict && districtCreditScore && (
+  <div>
+    <h2>{selectedDistrict} District Credit Score Information </h2>
+    <DistrictCharts
+      selectedDistrict={selectedDistrict} 
+      creditScoreData={getDistrictTopTotalCreditScore()}
+      totalAmountData={getDistrictTotalAmountData()}
+      creditCategoryData={getDistrictCreditCategoryData()}
+      paymenStatusData={getDistrictPaymentStatusData()}
+    />
+  </div>
+)}
+
+
+
+
+
+
  </>
         )}
         
       </div>
                 )}
+
+
+
+
+{selectedContent === 'province' && (
+  <div className="customer-list-container">
+    {isLoading ? (
+      <div className="loading-spinner"></div>
+    ) : (
+      <>
+
+
+{/* <div>
+  <h2>Province Occurrences</h2>
+  <ul>
+    {Object.entries(provinceOccurrences).map(([province, occurrences]) => (
+      <li key={province}>
+        {province}: {occurrences} occurrences
+      </li>
+    ))}
+  </ul>
+</div> */}
+
+
+             {isDistrictLoading && (
+  <div className="loading-spinner"></div>
+)}
+        <h2> Region (Province) </h2>
+        <form onSubmit={handleProvinceSubmit}>
+          <div>
+            <label>Select a Province:</label>
+            <select value={selectedProvince} onChange={handleProvinceSelectChange}>
+              <option value=""> Select a Province </option>
+              {provinces.sort().map((province, index) => (
+                <option key={index} value={province}>
+                  {province}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+
+ 
+
+      {/* Display customers and credit score information only if submitted */}
+{selectedProvince && provinceCreditScore && (
+  <div className="credit-score-table">
+    <h2> {selectedProvince}  Credit Score Information </h2>
+    <table>
+    <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Total Amount</th>
+                <th>Amount Paid</th>
+                <th>Delay Days</th>
+                <th>Credit Score</th>
+          <th>Payment Ratio</th>
+          <th>Credit Category</th>
+          <th>Amount Owed</th>
+          <th>Missed Payments</th>
+          <th>Number of Transactions</th>
+                        </tr>
+            </thead>
+      <tbody>
+        {/* Table rows */}
+        {provinceCreditScore.map((score, index) => (
+          <tr key={index}>
+                  <td>{score.customerName}</td>
+                  <td>{score.total_amount}</td>
+                  <td>{score.amount_paid}</td>
+                  <td>{score.delay_days}</td>
+                  <td>{score.credit_score}</td>
+            <td>{score.payment_ratio}</td>
+            <td>{score.credit_category}</td>
+            <td>{score.amount_owed}</td>
+            <td>{score.missed_payments}</td>
+            <td>{score.number_of_transactions}</td>
+                  {/* Add other credit score details as needed */}
+                </tr>
+              ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
+{ selectedProvince && provinceCreditScore && (
+  <div>
+    <ProvinceCharts
+      selectedProvince={selectedProvince} 
+      provCreditScoreData={getProvinceTotalCreditScore()}
+      provTotalAmountData={getProvinceTotalAmountData()}
+      ProvCreditCategoryData={getProvinceCreditCategoryData()}
+      provPaymenStatusData={getProvincePaymentStatusData()}
+    />
+  </div>
+)}
+
+ </>
+        )}
+        
+      </div>
+                )}
+
+
+
+
+{selectedContent === 'sector' && (
+  <div className="customer-list-container">
+    {isLoading ? (
+      <div className="loading-spinner"></div>
+    ) : (
+      <>
+
+             {isDistrictLoading && (
+  <div className="loading-spinner"></div>
+)}
+        <h2> Region (Sector) </h2>
+        <form onSubmit={handleSectorSubmit}>
+          <div>
+            <label>Select a Sector:</label>
+            <select value={selectedSector} onChange={handleSectorSelectChange}>
+              <option value=""> Select a Region </option>
+              {sectors.sort().map((sector, index) => (
+                <option key={index} value={sector}>
+                  {sector}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <button type="submit">Submit</button>
+          </div>
+        </form>
+
+ 
+
+      {/* Display customers and credit score information only if submitted */}
+      { selectedSector && sectorCreditScore && (
+  <div className="credit-score-table">
+    <h2> {selectedSector} Credit Score Information </h2>
+    <table>
+    <thead>
+              <tr>
+                <th>Customer Name</th>
+                <th>Total Amount</th>
+                <th>Amount Paid</th>
+                <th>Delay Days</th>
+                <th>Credit Score</th>
+          <th>Payment Ratio</th>
+          <th>Credit Category</th>
+          <th>Amount Owed</th>
+          <th>Missed Payments</th>
+          <th>Number of Transactions</th>
+                        </tr>
+            </thead>
+      <tbody>
+        {/* Table rows */}
+        {sectorCreditScore.map((score, index) => (
+          <tr key={index}>
+                  <td>{score.customerName}</td>
+                  <td>{score.total_amount}</td>
+                  <td>{score.amount_paid}</td>
+                  <td>{score.delay_days}</td>
+                  <td>{score.credit_score}</td>
+            <td>{score.payment_ratio}</td>
+            <td>{score.credit_category}</td>
+            <td>{score.amount_owed}</td>
+            <td>{score.missed_payments}</td>
+            <td>{score.number_of_transactions}</td>
+                  {/* Add other credit score details as needed */}
+                </tr>
+              ))}
+      </tbody>
+    </table>
+  </div>
+)}
+
+{ selectedSector && sectorCreditScore && (
+  <div>
+    <SectorCharts
+      selectedSector ={selectedSector} 
+      sectorCreditScoreData = {getSectorTotalCreditScore()}
+      sectorTotalAmountData = {getSectorTotalAmountData()}
+      sectorCreditCategoryData = {getSectorCreditCategoryData()}
+      sectorPaymenStatusData = {getSectorPaymentStatusData()}
+    />
+  </div>
+)}
+
+ </>
+        )}
+        
+      </div>
+                )}
+
+
+
 
               </div>
             </div>
