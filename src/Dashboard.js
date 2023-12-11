@@ -45,7 +45,7 @@ const Dashboard = () => {
   const [sectors, setSectors] = useState([]); // Add this line for sectors
 
 
-  const apiUrl = 'http://localhost:5000';
+  const apiUrl = 'https://kap-viebeg-server.onrender.com';
 
 
   
@@ -1495,7 +1495,7 @@ const getSectorCreditCategoryData = () => {
       {/* Display customers and credit score information only if submitted */}
 {isDistrictSubmitted && selectedDistrict && districtCreditScore && (
   <div className="credit-score-table">
-    <h2> {selectedDistrict} District Credit Score Information </h2>
+    <h3> {selectedDistrict} District Credit Score Information </h3>
     <table>
     <thead>
               <tr>
@@ -1606,7 +1606,7 @@ const getSectorCreditCategoryData = () => {
       {/* Display customers and credit score information only if submitted */}
 {selectedProvince && provinceCreditScore && (
   <div className="credit-score-table">
-    <h2> {selectedProvince}  Credit Score Information </h2>
+    <h3> {selectedProvince}  Credit Score Information </h3>
     <table>
     <thead>
               <tr>
@@ -1698,7 +1698,7 @@ const getSectorCreditCategoryData = () => {
       {/* Display customers and credit score information only if submitted */}
       { selectedSector && sectorCreditScore && (
   <div className="credit-score-table">
-    <h2> {selectedSector} Credit Score Information </h2>
+    <h3> {selectedSector} Credit Score Information </h3>
     <table>
     <thead>
               <tr>
