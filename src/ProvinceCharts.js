@@ -10,10 +10,11 @@ const ProvinceCharts = ({
   provCreditScoreData,
   provTotalAmountData,
   provCreditCategoryData,
-  provPaymenStatusData
+  provPaymenStatusData,
+  provTransactionData
 }) => {
 
-  
+
   if (!provCreditCategoryData) {
     return null; // or render a loading state
  }
@@ -25,7 +26,7 @@ const ProvinceCharts = ({
    
       {/* Pie Chart for Credit Category Distribution */}
       <div className="chart-container">
-      <h2 className='chart-heading'> What is the distribution of credit Category among health facilities in {selectedProvince} ? </h2>
+      <h2 className='chart-heading'> What is the Distribution of Credit Category for Health Hacilities in {selectedProvince}? </h2>
         <div className="center">
           <PieChart width={700} height={400}>
             <Pie
@@ -55,7 +56,7 @@ const ProvinceCharts = ({
 
       {/* Pie Chart for Payment Status Distribution */}
       <div className="chart-container">
-      <h2 clclassName='chart-heading'> What is the distribution of payment status for Health Facilities in {selectedProvince}? </h2>
+      <h2 clclassName='chart-heading'> What is the Distribution of Payment Status for Health Facilities in {selectedProvince}? </h2>
         <div className="center">
           <PieChart width={700} height={400}>
             <Pie
@@ -85,7 +86,7 @@ const ProvinceCharts = ({
 
    {/* Credit Score Bar Chart */}
    <div className="chart-container">
-        <h2> What are the top three health facilities in {selectedProvince} based on the credit score?
+        <h2> What are the Top Three Health Facilities in {selectedProvince} based on the Credit Score?
 </h2>
         <div className="center">
           <ResponsiveContainer width="90%" height={400} >
@@ -122,7 +123,7 @@ const ProvinceCharts = ({
 
       {/* Total Amount Bar Chart */}
       <div className="chart-container">
-        <h2> What are the top three health facilities in  {selectedProvince} based on the highest total amount paid? </h2>
+        <h2> What are the Top Three Health Facilities in {selectedProvince} based on the Highest Total Amount? </h2>
         <div className="center">
           <ResponsiveContainer width="90%" height={400} >
             <ComposedChart data={provTotalAmountData}>
@@ -156,7 +157,38 @@ const ProvinceCharts = ({
         </div>
       </div>
 
-      
+      <div className="chart-container">
+        <h2>How do the Number of Transactions vary across different Healthcare Facilities in {selectedProvince}?</h2>
+        <div className="center">
+          <ResponsiveContainer width="90%" height={400}>
+            <ComposedChart data={provTransactionData}>
+              <CartesianGrid strokeDasharray="1 1" />
+              <XAxis
+                dataKey="customerName"
+                angle={-10}
+                textAnchor="end"
+                interval={0}
+                height={80}
+                tick={{ dy: 10, fontSize: 10 }}
+                label={{ value: 'Health Facility', position: 'insideBottom', offset: 0 }}
+              />
+              <YAxis width={100} tick={{ dy: 10 }} label={{ value: 'Number of Transactions', angle: -90, position: 'insideLeft' }} />
+              <Tooltip cursor={false} />
+              <Legend
+                verticalAlign="top"
+                align="right"
+                wrapperStyle={{
+                  marginTop: '-40px',
+                }}
+              />
+            <Bar dataKey="numTransactions" fill="#8884d8" name="Number of Transactions"  barSize={120} />
+            <Line type="monotone" dataKey="numTransactions" fill="#82ca9d" name="Number of Transactions" />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+
     </>
   );
 };

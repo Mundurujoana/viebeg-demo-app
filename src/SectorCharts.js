@@ -4,7 +4,8 @@ import './dashboard.css';
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
-const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmountData, sectorCreditCategoryData, sectorPaymentStatusData }) => {
+const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmountData,
+   sectorCreditCategoryData, sectorPaymentStatusData, secTransactionData }) => {
   
 //   if (!sectorPaymentStatusData ) {
 //     return null; // or render a loading state
@@ -16,7 +17,7 @@ const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmount
      
       {/* Pie Chart for Credit Category Distribution */}
       <div className="chart-container">
-      <h2> What is the distribution of credit Category among health facilities in {selectedSector} Sector? </h2>
+      <h2> What is the Distribution of Credit Category for Health Facilities in {selectedSector} Sector? </h2>
         <div className="center">
           <PieChart width={700} height={400}>
             <Pie
@@ -46,7 +47,7 @@ const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmount
 
       {/* Pie Chart for Payment Status Distribution */}
       <div className="chart-container">
-      <h2> What is the distribution of payment status for Health Facilities in {selectedSector} Sector?"
+      <h2> What is the Distribution of Payment Status for Health Facilities in {selectedSector} Sector?
 </h2>
         <div className="center">
           <PieChart width={700} height={400}>
@@ -77,7 +78,7 @@ const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmount
 
        {/* Credit Score Bar Chart */}
        <div className="chart-container">
-        <h2> What are the top three health facilities in {selectedSector} Sector based on the credit score?
+        <h2> What are the Top Three Health Facilities in {selectedSector} Sector based on the Credit Score?
 </h2>
         <div className="center">
           <ResponsiveContainer width="90%" height={400}>
@@ -114,7 +115,7 @@ const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmount
 
       {/* Total Amount Bar Chart */}
       <div className="chart-container">
-      <h2> What are the top three health facilities in {selectedSector} Sector based on the highest total amount? </h2>
+      <h2> What are the Top Three Health Facilities in {selectedSector} Sector based on the Highest Total Amount? </h2>
         <div className="center">
           <ResponsiveContainer width="90%" height={400}>
             <ComposedChart data={sectorTotalAmountData}>
@@ -143,6 +144,37 @@ const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmount
               />
               <Bar dataKey="totalAmount" fill="#8884d8" name="Total Amount" barSize={120} />
               <Line type="monotone" dataKey="totalAmount" fill="#8884d8" name="Total Amount" />
+            </ComposedChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+      <div className="chart-container">
+        <h2>How do the Number of Transactions vary across different Healthcare Facilities in {selectedSector} Sector?</h2>
+        <div className="center">
+          <ResponsiveContainer width="90%" height={400}>
+            <ComposedChart data={secTransactionData}>
+              <CartesianGrid strokeDasharray="1 1" />
+              <XAxis
+                dataKey="customerName"
+                angle={-10}
+                textAnchor="end"
+                interval={0}
+                height={80}
+                tick={{ dy: 10, fontSize: 10 }}
+                label={{ value: 'Health Facility', position: 'insideBottom', offset: 0 }}
+              />
+              <YAxis width={100} tick={{ dy: 10 }} label={{ value: 'Number of Transactions', angle: -90, position: 'insideLeft' }} />
+              <Tooltip cursor={false} />
+              <Legend
+                verticalAlign="top"
+                align="right"
+                wrapperStyle={{
+                  marginTop: '-40px',
+                }}
+              />
+            <Bar dataKey="numTransactions" fill="#8884d8" name="Number of Transactions"  barSize={120} />
+            <Line type="monotone" dataKey="numTransactions" fill="#82ca9d" name="Number of Transactions" />
             </ComposedChart>
           </ResponsiveContainer>
         </div>

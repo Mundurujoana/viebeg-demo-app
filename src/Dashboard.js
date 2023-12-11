@@ -665,8 +665,41 @@ const COLORS = [
       creditScore: customer.credit_score,
     }));
   };
+
+
+  const getDistrictTransactionData = () => {
+    const sortedData = [...districtCreditScore].sort((a, b) => b.number_of_transactions - a.number_of_transactions);
+    const topTransactions = sortedData.slice(0, 3);
   
-       
+    return topTransactions.map((customer) => ({
+      customerName: customer.customerName,
+      numTransactions: customer.number_of_transactions,
+    }));
+  };
+
+
+ const getProvinceTransactionData  = () => {
+  const sortedData = [...provinceCreditScore].sort((a, b) => b.number_of_transactions - a.number_of_transactions);
+  const topTransactions = sortedData.slice(0, 3);
+
+  return topTransactions.map((customer) => ({
+    customerName: customer.customerName,
+    numTransactions: customer.number_of_transactions,
+  }));
+};
+
+
+  
+const getSectorTransactionData  = () => {
+  const sortedData = [...sectorCreditScore].sort((a, b) => b.number_of_transactions - a.number_of_transactions);
+  const topTransactions = sortedData.slice(0, 3);
+
+  return topTransactions.map((customer) => ({
+    customerName: customer.customerName,
+    numTransactions: customer.number_of_transactions,
+  }));
+};
+
        // Function to get data for the top three customers
        const getProvinceTotalCreditScore = () => {
         const sortedData = [...provinceCreditScore].sort((a, b) => b.credit_score - a.credit_score);
@@ -1542,6 +1575,7 @@ const getSectorCreditCategoryData = () => {
       totalAmountData={getDistrictTotalAmountData()}
       creditCategoryData={getDistrictCreditCategoryData()}
       paymenStatusData={getDistrictPaymentStatusData()}
+      transactionData={getDistrictTransactionData()}
     />
   </div>
 )}
@@ -1652,6 +1686,7 @@ const getSectorCreditCategoryData = () => {
       provTotalAmountData={getProvinceTotalAmountData()}
       provCreditCategoryData={getProvinceCreditCategoryData()}
       provPaymenStatusData={getProvincePaymentStatusData()}
+      provTransactionData = {getProvinceTransactionData()}
     />
   </div>
 )}
@@ -1744,6 +1779,7 @@ const getSectorCreditCategoryData = () => {
       sectorTotalAmountData = {getSectorTotalAmountData()}
       sectorCreditCategoryData = {getSectorCreditCategoryData()}
       sectorPaymentStatusData = {getSectorPaymentStatusData()}
+      secTransactionData = {getSectorTransactionData()}
     />
   </div>
 )}
