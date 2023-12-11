@@ -9,76 +9,6 @@ const DistrictCharts = ({selectedDistrict, creditScoreData, totalAmountData, cre
   return (
     <>
 
-      {/* Credit Score Bar Chart */}
-      <div className="chart-container">
-        <h2> {selectedDistrict} Top Three Customers with the Highest Credit Score</h2>
-        <div className="center">
-    <ResponsiveContainer width="90%" height={400} >
-      <ComposedChart data={creditScoreData}>
-      <CartesianGrid strokeDasharray="1 1" />
-        <XAxis 
-       dataKey="customerName"
-       angle={-10}
-                textAnchor="end"
-                interval={0}
-                height={80} 
-                tick={{ dy: 10, fontSize: 10 }}  // Adjust the fontSize as needed
-                 label={{ value: 'Health Facility', position: 'insideBottom', offset: 0 }} />
-        <YAxis  width={100} 
-                tick={{ dy: 10 }}  label={{ value: 'Credit Score', angle: -90, position: 'insideLeft' }} />
-        <Tooltip cursor={false}  />
-<Legend
-  verticalAlign="top"
-  align="right"
-  wrapperStyle={{
-    marginTop: '-40px', // Adjust this value to move the legend up
-  }}
-/>
-        <Bar  dataKey="creditScore" fill="#82ca9d" name="Credit Score" barSize={120}  />
-        <Line type="monotone"  dataKey="creditScore" fill="#82ca9d" name="Credit Score" />
-      </ComposedChart>
-    </ResponsiveContainer>
-  </div>
-  </div>
-
-
-     {/* Total Amount Bar Chart */}
-<div className="chart-container">
-  <h2> {selectedDistrict} Top Three Customers with the Highest Total Amount</h2>
-  <div className="center">
-    <ResponsiveContainer width="90%" height={400} >
-      <ComposedChart data={totalAmountData}>
-        <CartesianGrid strokeDasharray="1 1" />
-        <XAxis
-          dataKey="customerName"
-          angle={-10}
-          textAnchor="end"
-          interval={0}
-          height={80}
-          tick={{ dy: 10, fontSize: 10 }}  // Adjust the fontSize as needed
-          label={{ value: 'Health Facility', position: 'insideBottom', offset: 0 }}
-        />
-        <YAxis
-          width={100}
-          tick={{ dy: 10 }}
-          label={{ value: 'Total Amount', angle: -90, position: 'insideLeft' }}
-        />
-        <Tooltip cursor={false} />
-        <Legend
-          verticalAlign="top"
-          align="right"
-          wrapperStyle={{
-            marginTop: '-40px', // Adjust this value to move the legend up
-          }}
-        />
-        <Bar dataKey="totalAmount" fill="#8884d8" name="Total Amount" barSize={120} />
-        <Line type="monotone"  dataKey="totalAmount" fill="#8884d8" name="Total Amount" />
-      </ComposedChart>
-    </ResponsiveContainer>
-  </div>
-</div>
-
-
             {/* Pie Chart for Payment Status Distribution */}
             <div className="chart-container">
       <h2> What is the distribution of credit Category among health facilities in {selectedDistrict} District? </h2>
@@ -137,6 +67,77 @@ const DistrictCharts = ({selectedDistrict, creditScoreData, totalAmountData, cre
         />    </PieChart>
   </div>
   </div>
+
+        {/* Credit Score Bar Chart */}
+        <div className="chart-container">
+        <h2> What are the top three health facilities in  {selectedDistrict} based on the credit score?
+</h2>
+        <div className="center">
+    <ResponsiveContainer width="90%" height={400} >
+      <ComposedChart data={creditScoreData}>
+      <CartesianGrid strokeDasharray="1 1" />
+        <XAxis 
+       dataKey="customerName"
+       angle={-10}
+                textAnchor="end"
+                interval={0}
+                height={80} 
+                tick={{ dy: 10, fontSize: 10 }}  // Adjust the fontSize as needed
+                 label={{ value: 'Health Facility', position: 'insideBottom', offset: 0 }} />
+        <YAxis  width={100} 
+                tick={{ dy: 10 }}  label={{ value: 'Credit Score', angle: -90, position: 'insideLeft' }} />
+        <Tooltip cursor={false}  />
+<Legend
+  verticalAlign="top"
+  align="right"
+  wrapperStyle={{
+    marginTop: '-40px', // Adjust this value to move the legend up
+  }}
+/>
+        <Bar  dataKey="creditScore" fill="#82ca9d" name="Credit Score" barSize={120}  />
+        <Line type="monotone"  dataKey="creditScore" fill="#82ca9d" name="Credit Score" />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div>
+  </div>
+
+
+     {/* Total Amount Bar Chart */}
+<div className="chart-container">
+<h2> What are the top three health facilities in {selectedDistrict} based on the highest total amount paid?
+</h2>
+  <div className="center">
+    <ResponsiveContainer width="90%" height={400} >
+      <ComposedChart data={totalAmountData}>
+        <CartesianGrid strokeDasharray="1 1" />
+        <XAxis
+          dataKey="customerName"
+          angle={-10}
+          textAnchor="end"
+          interval={0}
+          height={80}
+          tick={{ dy: 10, fontSize: 10 }}  // Adjust the fontSize as needed
+          label={{ value: 'Health Facility', position: 'insideBottom', offset: 0 }}
+        />
+        <YAxis
+          width={100}
+          tick={{ dy: 10 }}
+          label={{ value: 'Total Amount', angle: -90, position: 'insideLeft' }}
+        />
+        <Tooltip cursor={false} />
+        <Legend
+          verticalAlign="top"
+          align="right"
+          wrapperStyle={{
+            marginTop: '-40px', // Adjust this value to move the legend up
+          }}
+        />
+        <Bar dataKey="totalAmount" fill="#8884d8" name="Total Amount" barSize={120} />
+        <Line type="monotone"  dataKey="totalAmount" fill="#8884d8" name="Total Amount" />
+      </ComposedChart>
+    </ResponsiveContainer>
+  </div>
+</div>
 
     </>
   );

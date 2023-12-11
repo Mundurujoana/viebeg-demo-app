@@ -656,70 +656,74 @@ const COLORS = [
 
         // REGION CHARTS CREDITSCORE
   // Function to get data for the top three customers
-  const getDistrictTopTotalCreditScore  = () => {
-    const sortedData = [...districtCreditScore].sort((a, b) => a.credit_score - b.credit_score);
-    const topTotalCreditScore = sortedData.slice(0, 5);
-
+  const getDistrictTopTotalCreditScore = () => {
+    const sortedData = [...districtCreditScore].sort((a, b) => b.credit_score - a.credit_score);
+    const topTotalCreditScore = sortedData.slice(0, 3);
+  
     return topTotalCreditScore.map((customer) => ({
       customerName: customer.customerName,
       creditScore: customer.credit_score,
     }));
   };
+  
        
        // Function to get data for the top three customers
-  const getProvinceTotalCreditScore  = () => {
-    const sortedData = [...provinceCreditScore].sort((a, b) => a.credit_score - b.credit_score);
-    const totalCreditScore = sortedData.slice(0, 5);
-
-    return totalCreditScore.map((customer) => ({
-      customerName: customer.customerName,
-      creditScore: customer.credit_score,
-    }));
-  };
+       const getProvinceTotalCreditScore = () => {
+        const sortedData = [...provinceCreditScore].sort((a, b) => b.credit_score - a.credit_score);
+        const topTotalCreditScore = sortedData.slice(0, 3);
+      
+        return topTotalCreditScore.map((customer) => ({
+          customerName: customer.customerName,
+          creditScore: customer.credit_score,
+        }));
+      };
+      
 
   // Function to get data for the top three customers
   const getSectorTotalCreditScore = () => {
-    const sortedData = [...sectorCreditScore].sort((a, b) => a.credit_score - b.credit_score);
-    const totalCreditScore = sortedData.slice(0, 5);
-
-    return totalCreditScore.map((customer) => ({
+    const sortedData = [...sectorCreditScore].sort((a, b) => b.credit_score - a.credit_score);
+    const topTotalCreditScore = sortedData.slice(0, 3);
+  
+    return topTotalCreditScore.map((customer) => ({
       customerName: customer.customerName,
       creditScore: customer.credit_score,
     }));
   };
   
+  
 
   // TOTAL AMOUNT
   // Function to get data for the top three customers
   const getDistrictTotalAmountData = () => {
-    const sortedData = [...districtCreditScore].sort((a, b) => a.total_amount - b.total_amount);
+    const sortedData = [...districtCreditScore].sort((a, b) => b.total_amount - a.total_amount);
     const totalAmount = sortedData.slice(0, 3);
-
+  
     return totalAmount.map((customer) => ({
       customerName: customer.customerName,
-      totalAmount: customer.total_amount
+      totalAmount: customer.total_amount,
     }));
   };
-
+  
   const getProvinceTotalAmountData = () => {
-    const sortedData = [...provinceCreditScore].sort((a, b) => a.total_amount - b.total_amount);
-    const totalAmount = sortedData.slice(0, 5);
-
+    const sortedData = [...provinceCreditScore].sort((a, b) => b.total_amount - a.total_amount);
+    const totalAmount = sortedData.slice(0, 3);
+  
     return totalAmount.map((customer) => ({
       customerName: customer.customerName,
-      totalAmount: customer.total_amount
+      totalAmount: customer.total_amount,
     }));
   };
-
+  
   const getSectorTotalAmountData = () => {
-    const sortedData = [...sectorCreditScore].sort((a, b) => a.total_amount - b.total_amount);
-    const totalAmount = sortedData.slice(0, 5);
-
+    const sortedData = [...sectorCreditScore].sort((a, b) => b.total_amount - a.total_amount);
+    const totalAmount = sortedData.slice(0, 3);
+  
     return totalAmount.map((customer) => ({
       customerName: customer.customerName,
-      totalAmount: customer.total_amount
+      totalAmount: customer.total_amount,
     }));
   };
+  
 
   
   // PAYMENT STATUS
@@ -1532,7 +1536,6 @@ const getSectorCreditCategoryData = () => {
 
 {isDistrictSubmitted && selectedDistrict && districtCreditScore && (
   <div>
-    <h2>{selectedDistrict} District Credit Score Information </h2>
     <DistrictCharts
       selectedDistrict={selectedDistrict} 
       creditScoreData={getDistrictTopTotalCreditScore()}
@@ -1647,7 +1650,7 @@ const getSectorCreditCategoryData = () => {
       selectedProvince={selectedProvince} 
       provCreditScoreData={getProvinceTotalCreditScore()}
       provTotalAmountData={getProvinceTotalAmountData()}
-      ProvCreditCategoryData={getProvinceCreditCategoryData()}
+      provCreditCategoryData={getProvinceCreditCategoryData()}
       provPaymenStatusData={getProvincePaymentStatusData()}
     />
   </div>
@@ -1740,7 +1743,7 @@ const getSectorCreditCategoryData = () => {
       sectorCreditScoreData = {getSectorTotalCreditScore()}
       sectorTotalAmountData = {getSectorTotalAmountData()}
       sectorCreditCategoryData = {getSectorCreditCategoryData()}
-      sectorPaymenStatusData = {getSectorPaymentStatusData()}
+      sectorPaymentStatusData = {getSectorPaymentStatusData()}
     />
   </div>
 )}

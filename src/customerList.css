@@ -1,6 +1,8 @@
 /* customerList.css */
+
+/* Basic styling for the customer list container */
 .customer-list-container {
-  background-color: #f7f7f7;
+  background-color: #f5f5f5; /* Light gray */
   padding: 40px;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -9,11 +11,14 @@
   margin: 0 auto;
 }
 
+/* Heading styles */
 h2 {
   font-size: 24px;
   margin-bottom: 20px;
+  color: #1e4d6c; /* Dark blue */
 }
 
+/* Form styling */
 form {
   display: flex;
   flex-direction: column;
@@ -34,8 +39,9 @@ select {
   margin-bottom: 20px;
 }
 
+/* Button styling with hover effect */
 button {
-  background-color: #007bff;
+  background-color: #0d5eaf; /* Darker blue */
   color: #fff;
   padding: 10px 20px;
   font-size: 16px;
@@ -46,9 +52,10 @@ button {
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #094176; /* Darker shade on hover */
 }
 
+/* Styling for customer info */
 .customer-info {
   background-color: #fff;
   padding: 20px;
@@ -60,11 +67,10 @@ button:hover {
 .customer-info h2 {
   font-size: 20px;
   margin-bottom: 10px;
+  color: #1e4d6c; /* Dark blue */
 }
 
-/* Customize your chart styles here */
-
-/* Style the Recharts bar chart */
+/* Styling for Recharts bar chart */
 .recharts-wrapper {
   margin-top: 20px;
   display: flex;
@@ -72,16 +78,14 @@ button:hover {
   align-items: center;
 }
 
-/* Style the Recharts chart title */
 .recharts-legend-wrapper {
   font-weight: bold;
   font-size: 18px;
   margin-bottom: 10px;
+  color: #1e4d6c; /* Dark blue */
 }
 
-/* Add this to your existing customerList.css file */
-
-/* Style for the table */
+/* Styling for the table */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -91,14 +95,15 @@ table {
 }
 
 table th {
-  background-color: #007bff;
+  background-color: #0d5eaf; /* Darker blue */
   color: #fff;
   font-weight: bold;
   padding: 10px;
   text-align: left;
 }
 
-table th, table td {
+table th,
+table td {
   border: 1px solid #ccc;
   padding: 10px;
 }

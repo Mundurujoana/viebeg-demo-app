@@ -1,62 +1,83 @@
 /* dashboard.css */
 
 .dashboard {
-          display: flex;
-        }
-        
-        .sidebar {
-          width: 20%;
-          background-color: #F0F2F6;
-          padding: 20px;
-          color: #575960;
-          height: 100vh;
-          padding-top: 200px;
-          display: flex;
-          flex-direction: column;
-          align-items: flex-start;
-        }
-        
-        .sidebar h2 {
-          margin-bottom: 10px;
-          cursor: pointer;
-          transition: color 0.3s;
-        }
-        
-        .sidebar h2:hover {
-          color: #61dafb;
-        }
-        
-        .content {
-          width: 100%;
-          padding: 20px;
-        }
-        
-        .with-sidebar .content {
-          width: 80%;
-        }
-        
-        .without-sidebar .sidebar {
-          display: none;
-        }
-        
+  display: flex;
+}
 
-  
-        /* Add styling for the icon */
-.show-sidebar {
+.sidebar {
+  width: 20%;
+  background-color: #F0F2F6;
+  padding: 20px;
+  color: #575960;
+  height: 100vh;
+  padding-top: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  transition: width 0.3s; /* Add smooth transition for width changes */
+}
+
+.sidebar h2 {
+  margin-bottom: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: #575960;
+  transition: color 0.3s;
+}
+
+.sidebar h2:hover {
+  color: #61dafb;
+}
+
+.content {
+  flex-grow: 1; /* Allow content to grow to fill available space */
+  padding: 20px;
+}
+
+.with-sidebar .content {
+  width: 80%;
+}
+
+.without-sidebar .sidebar {
+  display: none;
+}
+
+/* Add a subtle box shadow for a lifted effect */
+.sidebar,
+.content {
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  margin: 10px;
+}
+
+        .show-sidebar {
           cursor: pointer;
           display: flex;
           align-items: center;
           color: #007bff; /* Adjust the color as needed */
+          font-size: 18px; /* Adjust the font size */
+          font-weight: bold; /* Set the font weight to bold */
+          text-decoration: none; /* Remove underline for links */
+          transition: color 0.3s ease; /* Add a smooth color transition effect */
+        
+          /* Add a hover effect */
+          &:hover {
+            color: #0056b3; /* Adjust the hover color */
+          }
+        
+          /* Add a subtle box shadow */
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          padding: 10px; /* Add padding for better spacing */
+          border-radius: 5px; /* Add rounded corners */
+          margin: 5px; /* Add margin for better separation */
         }
+        
         
         .show-sidebar svg {
           margin-right: 5px; /* Adjust spacing between icon and text */
         }
-        
-        .show-sidebar:hover {
-          color: #0056b3; /* Adjust the hover color as needed */
-        }
-        
+       
         /* Add this style to your CSS */
 .center-container {
           display: flex;

@@ -5,11 +5,80 @@ import './dashboard.css';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmountData, sectorCreditCategoryData, sectorPaymentStatusData }) => {
+  
+//   if (!sectorPaymentStatusData ) {
+//     return null; // or render a loading state
+//  }
+  console.log('sectorPaymentStatusData:', sectorPaymentStatusData);
+  
   return (
     <>
-      {/* Credit Score Bar Chart */}
+     
+      {/* Pie Chart for Credit Category Distribution */}
       <div className="chart-container">
-        <h2 className='chart-heading'> {selectedSector} Top Three Customers with the Highest Credit Score</h2>
+      <h2> What is the distribution of credit Category among health facilities in {selectedSector} Sector? </h2>
+        <div className="center">
+          <PieChart width={700} height={400}>
+            <Pie
+              data={sectorCreditCategoryData}
+              cx={350}
+              cy={200}
+              labelLine={false}
+              label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+              outerRadius={150}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {sectorCreditCategoryData?.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Legend
+              verticalAlign="top"
+              align="right"
+              wrapperStyle={{
+                marginTop: '-40px', // Adjust this value to move the legend up
+              }}
+            />
+          </PieChart>
+        </div>
+      </div>
+
+      {/* Pie Chart for Payment Status Distribution */}
+      <div className="chart-container">
+      <h2> What is the distribution of payment status for Health Facilities in {selectedSector} Sector?"
+</h2>
+        <div className="center">
+          <PieChart width={700} height={400}>
+            <Pie
+              data={sectorPaymentStatusData}
+              cx={350}
+              cy={200}
+              labelLine={false}
+              label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+              outerRadius={150}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {sectorPaymentStatusData?.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Legend
+              verticalAlign="top"
+              align="right"
+              wrapperStyle={{
+                marginTop: '-40px', // Adjust this value to move the legend up
+              }}
+            />
+          </PieChart>
+        </div>
+      </div>
+
+       {/* Credit Score Bar Chart */}
+       <div className="chart-container">
+        <h2> What are the top three health facilities in {selectedSector} Sector based on the credit score?
+</h2>
         <div className="center">
           <ResponsiveContainer width="90%" height={400}>
             <ComposedChart data={sectorCreditScoreData}>
@@ -45,7 +114,7 @@ const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmount
 
       {/* Total Amount Bar Chart */}
       <div className="chart-container">
-        <h2 className='chart-heading'> {selectedSector} Top Three Customers with the Highest Total Amount</h2>
+      <h2> What are the top three health facilities in {selectedSector} Sector based on the highest total amount? </h2>
         <div className="center">
           <ResponsiveContainer width="90%" height={400}>
             <ComposedChart data={sectorTotalAmountData}>
@@ -79,65 +148,6 @@ const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmount
         </div>
       </div>
 
-      {/* Pie Chart for Credit Category Distribution */}
-      <div className="chart-container">
-        <h2 className='chart-heading'>Credit Category Distribution</h2>
-        <div className="center">
-          <PieChart width={700} height={400}>
-            <Pie
-              data={sectorCreditCategoryData}
-              cx={350}
-              cy={200}
-              labelLine={false}
-              label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
-              outerRadius={150}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {sectorCreditCategoryData?.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Legend
-              verticalAlign="top"
-              align="right"
-              wrapperStyle={{
-                marginTop: '-40px', // Adjust this value to move the legend up
-              }}
-            />
-          </PieChart>
-        </div>
-      </div>
-
-      {/* Pie Chart for Payment Status Distribution */}
-      <div className="chart-container">
-        <h2 className='chart-heading'>Payment Status Distribution</h2>
-        <div className="center">
-          <PieChart width={700} height={400}>
-            <Pie
-              data={sectorPaymentStatusData}
-              cx={350}
-              cy={200}
-              labelLine={false}
-              label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
-              outerRadius={150}
-              fill="#8884d8"
-              dataKey="value"
-            >
-              {sectorPaymentStatusData?.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-              ))}
-            </Pie>
-            <Legend
-              verticalAlign="top"
-              align="right"
-              wrapperStyle={{
-                marginTop: '-40px', // Adjust this value to move the legend up
-              }}
-            />
-          </PieChart>
-        </div>
-      </div>
     </>
   );
 };
