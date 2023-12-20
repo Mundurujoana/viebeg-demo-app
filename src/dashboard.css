@@ -94,4 +94,64 @@ h3 {
           height: 100vh; /* Adjust this to fit your layout */
         }
         
+/* 
+        .loading-spinn {
+          display: inline-block;
+          position: relative;
+          width: 64px;
+          height: 64px;
+        }
+        
+        .loading-spinn::before,
+        .loading-spinn::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border-radius: 50%;
+          background: linear-gradient(90deg, transparent, #3498db, transparent);
+          animation: ripple 1.2s infinite cubic-bezier(0.5, 0, 0.5, 1);
+        }
+        
+        .loading-spinn::after {
+          animation-delay: 0.6s;
+        }
+        
+        @keyframes ripple {
+          0% {
+            transform: scale(0);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 0;
+          }
+        }
+         */
 
+
+         .loading-spinn {
+          width: 50px;
+          height: 50px;
+          border-radius: 50%;
+          border: 8px solid transparent;
+          border-top-color: #3498db;
+          animation: spin 1s linear infinite, changeColor 3s linear infinite;
+          margin: 20px auto;
+        }
+        
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        
+        @keyframes changeColor {
+          0% { border-top-color: #3498db; }
+          25% { border-top-color: #2ecc71; }
+          50% { border-top-color: #e74c3c; }
+          75% { border-top-color: #f39c12; }
+          100% { border-top-color: #3498db; }
+        }
+        

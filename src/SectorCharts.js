@@ -5,7 +5,8 @@ import './dashboard.css';
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmountData,
-   sectorCreditCategoryData, sectorPaymentStatusData, secTransactionData }) => {
+   sectorCreditCategoryData, sectorPaymentStatusData, secTransactionData,
+    sectorPaymentMethod, sectorCurrencyData, sectorTransPaymentStatusData, sectorTotalAmountPerYearData }) => {
   
 //   if (!sectorPaymentStatusData ) {
 //     return null; // or render a loading state
@@ -179,6 +180,139 @@ const SectorCharts = ({ selectedSector, sectorCreditScoreData, sectorTotalAmount
           </ResponsiveContainer>
         </div>
       </div>
+
+
+       {/* Pie Chart for Credit Category Distribution */}
+       <div className="chart-container">
+      <h2> What Payment Methods are Frequently Utilized by Health Facilities in {selectedSector} Sector? </h2>
+        <div className="center">
+          <PieChart width={700} height={400}>
+            <Pie
+              data={sectorPaymentMethod}
+              cx={350}
+              cy={200}
+              labelLine={false}
+              label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+              outerRadius={150}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {sectorCreditCategoryData?.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Legend
+              verticalAlign="top"
+              align="right"
+              wrapperStyle={{
+                marginTop: '-40px', // Adjust this value to move the legend up
+              }}
+            />
+          </PieChart>
+        </div>
+      </div>
+
+
+
+{/* Pie Chart for Credit Category Distribution */}
+<div className="chart-container">
+      <h2> What Currency do Health Facilities use for Transactions in {selectedSector} Sector? </h2>
+        <div className="center">
+          <PieChart width={700} height={400}>
+            <Pie
+              data={sectorCurrencyData}
+              cx={350}
+              cy={200}
+              labelLine={false}
+              label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+              outerRadius={150}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {sectorCurrencyData?.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Legend
+              verticalAlign="top"
+              align="right"
+              wrapperStyle={{
+                marginTop: '-40px', // Adjust this value to move the legend up
+              }}
+            />
+          </PieChart>
+        </div>
+      </div>
+
+
+{/* Pie Chart for Credit Category Distribution */}
+<div className="chart-container">    
+ <h2 className='chart-heading'> What is the Payment Status Distribution Among Health Facilities in {selectedSector} Sector? </h2>
+        <div className="center">
+          <PieChart width={700} height={400}>
+            <Pie
+              data={sectorTransPaymentStatusData}
+              cx={350}
+              cy={200}
+              labelLine={false}
+              label={({ name, value, percent }) => `${name}: ${(percent * 100).toFixed(2)}%`}
+              outerRadius={150}
+              fill="#8884d8"
+              dataKey="value"
+            >
+              {sectorCurrencyData?.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Legend
+              verticalAlign="top"
+              align="right"
+              wrapperStyle={{
+                marginTop: '-40px', // Adjust this value to move the legend up
+              }}
+            />
+          </PieChart>
+        </div>
+      </div>
+
+
+{/* Total Amount Per Year Bar Chart */}
+<div className="chart-container">
+        <h2>What is the Total Amount per Year for {selectedSector}?</h2>
+        <div className="center">
+          <ResponsiveContainer width="90%" height={400}>
+            <BarChart data={sectorTotalAmountPerYearData}>
+              <CartesianGrid strokeDasharray="1 1" />
+              <XAxis
+                dataKey="year"
+                angle={-45}
+                textAnchor="end"
+                interval={0}
+                height={80}
+                tick={{ dy: 10 }}
+                label={{ value: 'Year', position: 'insideBottom', offset: 0 }}
+              />
+              <YAxis
+                width={100}
+                tick={{ dy: 10 }}
+                label={{ value: 'Payments', angle: -90, position: 'insideLeft' }}
+              />
+              <Tooltip cursor={false} />
+              <Legend
+                verticalAlign="top"
+                align="right"
+                wrapperStyle={{
+                  marginTop: '-40px', // Adjust this value to move the legend up
+                }}
+              />
+              <Bar dataKey="total_amount" fill="#8884d8" name="Total Amount" barSize={120} />
+              <Line type="monotone" dataKey="total_amount" stroke="#82ca9d" name="Total Amount" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
+
 
     </>
   );
