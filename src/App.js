@@ -4,6 +4,7 @@ import CustomerList from './CustomerList'; // Make sure the path is correct
 import Region from './Region'; // Make sure the path is correct
 import HealthFacility from './HealthFacility';
 import Dashboard from './Dashboard';
+import ViebegDashboard from './ViebegDashboard';
 
 
 
@@ -13,7 +14,7 @@ function App() {
       <div className="App">
         <header className="App-header">
           <Routes>
-          <Route path="/" exact element={<Dashboard/>} />
+          <Route path="/" exact element={<ViebegDashboard/>} />
           </Routes>
         </header>
       </div>
