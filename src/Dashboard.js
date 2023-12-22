@@ -1125,9 +1125,6 @@ return (
             <button type="submit">Submit</button>
           </div>
         </form>
-  
-  
-
         
   
         {/* Display customers and credit score information */}

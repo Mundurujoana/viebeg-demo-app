@@ -1,5 +1,9 @@
 
 
+.dashboard-container {
+  display: flex;
+}
+
 .viebeg-dashboard-sidebar {
           width: 18%;
           background-color: #eff6ff;
@@ -319,3 +323,53 @@
         }
         
         
+        .viebeg-dashboard-main-content {
+          flex-grow: 1;
+          padding: 20px;
+        }
+
+    
+
+        .selected-item-heading {
+          display: flex;
+          align-items: center;
+        }
+        
+        .selected-item-heading h2 {
+          margin-right: 10px;
+        }
+        
+        .selected-item-heading p {
+          margin: 0;
+        }
+             
+
+        .viebeg-dashboard-main-content {
+          text-align: center;
+          padding: 20px;
+          background-color: #f5f5f5;
+          border-radius: 8px;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .dashboard-title {
+          font-size: 36px;
+          margin-bottom: 10px;
+          color: #333; /* Adjust the color as needed */
+        }
+        
+        .dashboard-description {
+          font-size: 16px;
+          color: #555; /* Adjust the color as needed */
+          margin-bottom: 20px;
+        }
+        
+        .divider {
+          width: 200px;
+          height: 1px;
+          background-color: #ccc; /* Adjust the color as needed */
+          margin: 20px auto; /* Center the horizontal line and provide spacing */
+        }
+        
+        
+ 
