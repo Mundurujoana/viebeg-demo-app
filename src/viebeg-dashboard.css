@@ -9,7 +9,6 @@
           background-color: #eff6ff;
           padding: 20px;
           color: #575960;
-          height: 100vh;
           padding-top: 200px;
           display: flex;
           flex-direction: column;
@@ -436,6 +435,7 @@
 
 /* YourComponent.css */
 
+
 /* Add styles for larger screens */
 @media (min-width: 768px) {
   .dashboard-container {
@@ -452,6 +452,7 @@
     /* Other styles for larger screens */
   }
 }
+
 
 /* Add styles for smaller screens */
 @media (max-width: 767px) {
@@ -514,4 +515,10 @@
   right: 10px; /* Adjust the right position as needed */
   z-index: 1001; /* Ensure it's on top of the overlay */
 }
+
+
+
+
+
+
 
