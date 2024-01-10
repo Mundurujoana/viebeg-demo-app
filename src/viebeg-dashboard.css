@@ -48,14 +48,6 @@
           position: relative; /* Position relative for absolute positioning of dropdown content */
         }
         
-        /* Profile Dropdown Styles */
-        .profile-dropdown {
-          display: flex;
-          align-items: center;
-          margin-right: 10px; /* Adjust the spacing as needed */
-          cursor: pointer; /* Add cursor pointer for better interaction */
-          position: relative; /* Position relative for absolute positioning of dropdown content */
-        }
         
         .icon-container {
           display: flex;
@@ -86,7 +78,8 @@
           box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; /* Updated box shadow to match the reference styling */
           transform: translateY(2px); /* Adjust the vertical offset as needed */
           transform-origin: top left;
-          transition: opacity 0.3s, visibility 0.3s, transform 0.3s; /* Add transition for smoother animation */        }
+          transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+           /* Add transition for smoother animation */        }
         
           
 /* Updated Dropdown Profile Content Styles */
@@ -121,6 +114,7 @@
         .dropdown-profile-content div:first-child {
           border-bottom: 1px solid #eee;
         }
+        
         
         .dropdown-profile-content div:last-child {
           border-top: 1px solid #eee;
@@ -173,6 +167,19 @@
           font-size: 12px;
           margin-left: 10px; /* Adjust the spacing as needed */
         }
+        .dropdown-arrow.up {
+          transform: rotate(180deg);
+        }
+        
+          /* Dropdown Arrow Styles */
+          .set-dropdown-arrow {
+            font-size: 12px;
+            margin-left: 10px; /* Adjust the spacing as needed */
+          }
+  
+          .set-dropdown-arrow.up {
+            transform: rotate(180deg);
+          }
         
         /* Profile Info Styles */
         .profile-info {
@@ -382,54 +389,159 @@
 
 /* Hamburger Menu Styles */
 .hamburger-menu {
-  display: none;
+  display: none; /* Initially hide the hamburger icon on larger screens */
   cursor: pointer;
 }
 
-.bar {
-  width: 30px;
-  height: 3px;
-  background-color: #333;
-  margin: 6px 0;
-  transition: 0.4s;
-}
-
-/* Mobile Menu Styles */
-.mobile-menu {
-  display: none;
-}
-
-.mobile-menu-open .mobile-menu {
-  display: block;
-}
-
-.mobile-menu ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-.mobile-menu li {
-  padding: 10px;
-  border-bottom: 1px solid #eee;
+.hamburger-icon {
+  font-size: 24px;
+  color: #333;
+  margin-right: 10px;
 }
 
 
 
-/* Media query for screens 768 pixels or smaller (tablets and phones) */
+/* Media query for screens 768 pixels or smaller */
 @media (max-width: 768px) {
   .viebeg-dashboard-navbar {
     justify-content: space-between; /* Adjust alignment for small screens */
   }
 
   .navbar-content {
-    display: none; /* Hide the regular navbar content on small screens */
+    position: absolute;
+    gap: 0;
+    top: 60px; /* Adjust the top value based on your design */
+    left: 100%;
+    text-align: start;
+    width: 100%;
+    height: 25vh;
+    transition: 0.7s ease-in-out;
+    background-color: #ffffff; /* Set the background color for the navbar */
+    padding: 10px;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add box shadow */
+    z-index: 2; /* Ensure the navbar appears above other elements */
   }
+
+  .navbar-content.open {
+    left: 0;
+    height: 25vh;
+  }
+
+  .settings-dropdown {
+    display: flex;
+    flex-direction: column; /* Adjust for vertical alignment */
+    align-items: flex-end; /* Align items to the end of the container */
+    margin-right: 30px; /* Adjust the spacing as needed */
+    margin-top: 30px; /* Adjust the top margin as needed */
+    cursor: pointer; /* Add cursor pointer for better interaction */
+    position: relative; /* Position relative for absolute positioning of dropdown content */
+  }
+
+
+  .profile-info {
+    display: flex;
+    align-items: center;
+    margin-top: 30px; /* Adjust the top margin as needed */
+    margin-right: 10px; /* Adjust the spacing as needed */
+  }
+
+  .icon-container {
+    display: flex;
+    align-items: center;
+    margin-right: 0; /* Adjust the spacing between icons as needed */
+  }
+
+  .search-input {
+    display: none; /* Hide search input and sidebar by default */
+  }
+
+  .dropdown-content  {
+    position: absolute;
+    top: 30%; /* Position below the arrow */
+    left: 200px;
+    background-color: #fff;
+    font-weight: 500;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    min-width: 150px;
+    font-size: 12px;
+    z-index: 1;
+    padding: 20px;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    transform: translateY(2px);
+    transform-origin: top left;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+  }
+
+  
+
+  .settings-icon {
+    font-size: 22px;
+    margin-right: 10px; /* Adjust the spacing as needed */
+  }
+
+  .dropdown-arrow {
+    font-size: 12px;
+    margin-left: 15px; /* Adjust the spacing as needed */
+  }
+  
+  .set-dropdown-arrow {
+    font-size: 12px;
+    margin-right: 10px; /* Adjust the spacing as needed */
+  }
+
+  
 
   .hamburger-menu {
     display: block; /* Show the hamburger menu icon */
   }
+
+  .dashboard-container.overlay-open .viebeg-dashboard-sidebar {
+    display: none;
+  }
+
+  .dashboard-container.overlay-open .viebeg-dashboard-main-content {
+    width: 100%; /* Adjust the main content width when the sidebar is hidden */
+  }
 }
 
+
+/* Add this to your existing CSS or update the existing styles */
+.close-button {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+}
+
+.close-icon {
+  font-size: 15px;
+  color: #333;
+}
+
+.overlay {
+  position: fixed;
+  background: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity as needed */
+  top: 60px; /* Adjust the top position based on your navbar height */
+  left: 0;
+  width: 100%;
+  height: calc(100% - 60px); /* Adjust the height based on your navbar height */
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s, visibility 0.35s, height 0.35s;
+  overflow: hidden;
+  display: none; /* Add this line to initially hide the overlay */
+}
+
+.overlay.open {
+  opacity: 1;
+  visibility: visible;
+  height: calc(100% - 60px); /* Adjust the height based on your navbar height */
+  display: block; /* Add this line to show the overlay when it is open */
+}
+
+/* ... (Your existing styles) */
 
 
 
@@ -471,54 +583,6 @@
     /* Other styles for smaller screens */
   }
 }
-
-
-
-
-
-
-
-
-
-.overlay {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* semi-transparent black */
-  z-index: 1000; /* ensure it's on top of other elements */
-}
-
-.overlay.open {
-  display: block;
-}
-
-
-
-
-/* Add this new style for the close icon */
-.close-icon {
-  font-size: 24px;
-  cursor: pointer;
-  width: 30px;
-  height: 3px;
-  color: #ffffff;
-  margin: 6px 0;
-}
-
-/* Position the close icon similarly to the hamburger menu icon */
-.hamburger-menu .close-icon {
-  position: absolute;
-  top: 10px; /* Adjust the top position as needed */
-  right: 10px; /* Adjust the right position as needed */
-  z-index: 1001; /* Ensure it's on top of the overlay */
-}
-
-
-
-
 
 
 
