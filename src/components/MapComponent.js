@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Popup, Marker } from 'react-leaflet';
 import Papa from 'papaparse';
 import Axios from 'axios';
+import L, { LatLng } from 'leaflet';
+import Search from 'react-leaflet-search';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 
 import { FaUpload } from 'react-icons/fa';
 import classes from './map.module.css';
@@ -33,6 +34,8 @@ const MapComponent = () => {
     popupAnchor: [2, -40],
   });
 
+  const searchLayer = 
+
   return (
     <div className={classes.map_container}>
       <MapContainer center={center} zoom={8} style={{ height: '100vh', width: '100%' }}>
@@ -58,7 +61,8 @@ const MapComponent = () => {
           </Popup>
         </Marker>
         })}
-    
+     
+       
       </MapContainer>
     </div>
   );
