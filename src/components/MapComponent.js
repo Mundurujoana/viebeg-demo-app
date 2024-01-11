@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Popup, Marker } from 'react-leaflet';
 import Papa from 'papaparse';
 import Axios from 'axios';
 import L, { LatLng } from 'leaflet';
-import Search from 'react-leaflet-search';
 import 'leaflet/dist/leaflet.css';
 
 import { FaUpload } from 'react-icons/fa';
@@ -34,8 +33,6 @@ const MapComponent = () => {
     popupAnchor: [2, -40],
   });
 
-  const searchLayer = 
-
   return (
     <div className={classes.map_container}>
       <MapContainer center={center} zoom={8} style={{ height: '100vh', width: '100%' }}>
@@ -44,6 +41,7 @@ const MapComponent = () => {
           attribution='<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
         />
         {csvData.length>0 && csvData.map(item=>{
+          console.log("_____________", item);
           return <Marker
           position={[parseFloat(item.Latitude), parseFloat(item.Longitude)]}
           icon={L.icon({
@@ -55,14 +53,46 @@ const MapComponent = () => {
         >
           <Popup>
             {/* Customize the popup content based on your CSV data */}
-            <div>
-              <p>Other information here</p>
-            </div>
-          </Popup>
+            <table id="customers">
+                <tr>
+                  <th>Title</th>
+                  <th>Details</th>
+                </tr>
+                <tr>
+                <td>Province</td>
+                <td>{item.Province}</td>
+              </tr>
+                <tr>
+                  <td>District</td>
+                  <td>{item.District}</td>
+                </tr>
+               
+                <tr>
+                  <td>Sector</td>
+                  <td>{item.Sector}</td>
+                </tr>
+                <tr>
+                <td>Cell</td>
+                <td>{item.cell}</td>
+              </tr>
+             
+              <tr>
+                <td>Village</td>
+                <td>{item.village}</td>
+              </tr>
+              <tr>
+              <td>FACILITY TYPE</td>
+              <td>{item["FACILITY TYPE"]}</td>
+            </tr>
+            <tr>
+            <td>HEALTH FACILITY</td>
+            <td>{item["HEALTH FACILITY"]}</td>
+            </tr>
+              </table>
+          
+            </Popup>
         </Marker>
         })}
-     
-       
       </MapContainer>
     </div>
   );
