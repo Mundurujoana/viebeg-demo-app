@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow: hidden;
 }
 
 
@@ -70,21 +70,20 @@ body {
         .dropdown-content  {
           position: absolute;
           top: 100%; /* Position below the arrow */
-          left: -150px;
+          right: 0;
           background-color: #fff;
           font-weight: 500;
-          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add box shadow for dropdown */
+          box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
           display: flex;
-          font-size: 12px;
           flex-direction: column;
-          min-width: 150px; /* Adjust the width as needed */
-          z-index: 1; /* Ensure the dropdown appears above other elements */
+          min-width: 20px;
+          font-size: 12px;
+          z-index: 1;
           padding: 20px;
-          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px; /* Updated box shadow to match the reference styling */
-          transform: translateY(2px); /* Adjust the vertical offset as needed */
+          box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+          transform: translateY(2px);
           transform-origin: top left;
-          transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
-           /* Add transition for smoother animation */        }
+          transition: opacity 0.3s, visibility 0.3s, transform 0.3s;       }
         
           
 /* Updated Dropdown Profile Content Styles */
@@ -405,7 +404,7 @@ body {
 
 
 /* Media query for screens 768 pixels or smaller */
-@media (max-width:  1024px) {
+@media (max-width: 768px) {
   .viebeg-dashboard-navbar {
     justify-content: space-between; /* Adjust alignment for small screens */
   }
@@ -467,7 +466,7 @@ body {
   .dropdown-content  {
     position: absolute;
     top: 30%; /* Position below the arrow */
-    left: 200px;
+    left: 0;
     background-color: #fff;
     font-weight: 500;
     box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1);
