@@ -7,6 +7,8 @@ import logo from './viebeg-logo.png';
 import { BsHospitalFill, BsTools, BsThermometerHigh, BsPinMapFill } from "react-icons/bs";
 import defaultProfileImage from './doc.jpg';
 import './viebeg-dashboard.css';
+import Map from './components/MapComponent';
+import MapComponent from './components/MapComponent';
 
 library.add(faCog, faChevronDown, faBuilding, faTemperatureThreeQuarters);
 
@@ -241,10 +243,8 @@ const ViebegDashboard = () => {
   {/* Main content of the dashboard goes here */}
   <h1 className="dashboard-title">Viebeg Health Assessment and Capacity Evaluation Tool (HACET)</h1>
   <p className="dashboard-description">Explore and manage your healthcare data with ease.</p>
-
   <hr className="divider" />
-
-
+  <MapComponent />
 
           {selectedSector && (
             <div className="selected-item-heading">
@@ -254,19 +254,19 @@ const ViebegDashboard = () => {
 
 <div>
  {/* Display heading based on the selected disease */}
- {selectedDisease && (
+                {selectedDisease && (
             <div className="selected-item-heading">
               <h2>Selected Disease:</h2> <p>{selectedDisease}</p>
             </div>
           )}
           
-   {selectedFacilityType && (
+            {selectedFacilityType && (
             <div className="selected-item-heading">
               <h2>Selected Facility Type:</h2> <p>{selectedFacilityType}</p>
             </div>
           )}
 
-{selectedEquipment && (
+          {selectedEquipment && (
             <div className="selected-item-heading">
               <h2>Selected Equipment:</h2> <p>{selectedEquipment}</p>
             </div>
