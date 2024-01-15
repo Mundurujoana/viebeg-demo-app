@@ -1,0 +1,18 @@
+.map_container{
+    background-color: black;
+    height: 100vh;
+}
+
+.table {
+    display: table;
+    width: 100%;
+}
+
+.table_row {
+    display: table-row;
+}
+
+.table_cell {
+    display: table-cell;
+    padding: 5px;
+}
