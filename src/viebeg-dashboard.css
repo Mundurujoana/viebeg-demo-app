@@ -1,7 +1,8 @@
 body {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;  /* Hide horizontal overflow */
+  overflow-y: visible; /* Allow vertical overflow to be visible */
 }
 
 
@@ -51,6 +52,7 @@ body {
           margin-right: 50px; /* Adjust the spacing as needed */
           cursor: pointer; /* Add cursor pointer for better interaction */
           position: relative; /* Position relative for absolute positioning of dropdown content */
+
         }
         
         
@@ -78,7 +80,7 @@ body {
           flex-direction: column;
           min-width: 150px;
           font-size: 12px;
-          z-index: 1;
+          z-index: 999;
           padding: 20px;
           box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
           transform: translateY(2px);
@@ -98,7 +100,7 @@ body {
           flex-direction: column;
           min-width: 220px;
           font-size: 12px;
-          z-index: 1;
+          z-index: 900;
           padding: 20px;
           box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
           transform: translateY(2px);
@@ -356,9 +358,10 @@ body {
 
         .viebeg-dashboard-main-content {
           text-align: center;
-          padding: 20px;
+          padding: 0px;
           background-color: #f5f5f5;
           height: 100vh;
+           width: 100%;
         }
         
         .dashboard-title {
@@ -407,7 +410,8 @@ body {
 @media (max-width: 768px) {
 
   body {
-    overflow: hidden; /* Hide the x-axis scrollbar */
+    overflow-x: hidden;  /* Hide horizontal overflow */
+    overflow-y: visible; /* Allow vertical overflow to be visible */
   }
   .viebeg-dashboard-navbar {
     justify-content: space-between; /* Adjust alignment for small screens */
@@ -426,7 +430,7 @@ body {
     transition: 0.7s ease-in-out;
     background-color: #ffffff; /* Set the background color for the navbar */
     padding: 10px;
-    z-index: 2; /* Ensure the navbar appears above other elements */
+    z-index: 900;
   }
 
   .navbar-content.open {
@@ -478,7 +482,7 @@ body {
     flex-direction: column;
     min-width: 20px;
     font-size: 12px;
-    z-index: 1;
+    z-index: 900;
     padding: 20px;
     box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
     transform: translateY(2px);
@@ -595,6 +599,5 @@ body {
     /* Other styles for smaller screens */
   }
 }
-
 
 

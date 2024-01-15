@@ -274,39 +274,7 @@ const ViebegDashboard = () => {
 
 
       <div className="viebeg-dashboard-main-content">
-  {/* Main content of the dashboard goes here */}
-  <h1 className="dashboard-title">Viebeg Health Assessment and Capacity Evaluation Tool (HACET)</h1>
-  <p className="dashboard-description">Explore and manage your healthcare data with ease.</p>
-  <hr className="divider" />
   <MapComponent />
-
-          {selectedSector && (
-            <div className="selected-item-heading">
-              <h2>Selected Sector:</h2> <p>{selectedSector} Sector</p>
-            </div>
-          )}
-
-<div>
- {/* Display heading based on the selected disease */}
-                {selectedDisease && (
-            <div className="selected-item-heading">
-              <h2>Selected Disease:</h2> <p>{selectedDisease}</p>
-            </div>
-          )}
-          
-            {selectedFacilityType && (
-            <div className="selected-item-heading">
-              <h2>Selected Facility Type:</h2> <p>{selectedFacilityType}</p>
-            </div>
-          )}
-
-          {selectedEquipment && (
-            <div className="selected-item-heading">
-              <h2>Selected Equipment:</h2> <p>{selectedEquipment}</p>
-            </div>
-          )}
-
-          </div>
 
           </div>
 
