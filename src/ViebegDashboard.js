@@ -16,10 +16,6 @@ const ViebegDashboard = () => {
   const [isProfileDropdown, setProfileDropdown] = useState(false);
 
   // Static arrays for dropdown options
-  const staticSectors = ["Sector A", "Sector B", "Sector C"];
-  const staticDiseases = ["Disease X", "Disease Y", "Disease Z"];
-  const staticFacilityTypes = ["Hospital", "Clinic", "Lab"];
-  const staticEquipments = ["Equipment 1", "Equipment 2", "Equipment 3"];
 
   const [selectedSector, setSelectedSector] = useState('');
   const [selectedDisease, setSelectedDisease] = useState('');
@@ -31,7 +27,10 @@ const ViebegDashboard = () => {
   const [facilityTypes, setFacilityTypes] = useState([]);
   const [equipments, setEquipments] = useState([]);
 
-  const apiUrl = 'https://kap-viebeg-server.onrender.com';
+  // const apiUrl = 'https://kap-viebeg-server.onrender.com';
+
+  const apiUrl = "http://localhost:5000"
+
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
 
@@ -199,76 +198,75 @@ const ViebegDashboard = () => {
           <p className="sidebar-filters">3000/3000</p>
           <button className="reset-button">Reset</button>
         </div>
+
         <div className="sidebar-inputs">
           {/* Search Input */}
           <input type="text" placeholder="Search..." className="search-input" />
 
           {/* Dropdown Select Fields */}
           <div className="select-container">
-          <BsPinMapFill className="select-icon" />
-          <select
-            value={selectedSector}
-            onChange={(e) => setSelectedSector(e.target.value)}
-            className="sidebar-input"
-          >
-            <option value="">Select Sector</option>
-            {staticSectors.map((sector) => (
-              <option key={sector} value={sector}>
-                {sector}
-              </option>
-            ))}
-          </select>
-        </div>
+            <BsPinMapFill className="select-icon" />
+            <select
+              value={selectedSector}
+              onChange={(e) => setSelectedSector(e.target.value)}
+              className="sidebar-input"
+            >
+              <option value="">Select Sector</option>
+              {sectors.map((sector) => (
+                <option key={sector} value={sector}>
+                  {sector}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="select-container">
-          <BsThermometerHigh className="select-icon" />
-          <select
-            value={selectedDisease}
-            onChange={(e) => setSelectedDisease(e.target.value)}
-            className="sidebar-input"
-          >
-            <option value="">Disease</option>
-            {staticDiseases.map((disease) => (
-              <option key={disease} value={disease}>
-                {disease}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="select-container">
+            <BsThermometerHigh className="select-icon" />
+            <select
+              value={selectedDisease}
+              onChange={(e) => setSelectedDisease(e.target.value)}
+              className="sidebar-input"
+            >
+              <option value="">Disease</option>
+              {diseases.map((disease) => (
+                <option key={disease} value={disease}>
+                  {disease}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="select-container">
-          <BsHospitalFill className="select-icon" />
-          <select
-            value={selectedFacilityType}
-            onChange={(e) => setSelectedFacilityType(e.target.value)}
-            className="sidebar-input"
-          >
-            <option value=""> Facility Type </option>
-            {staticFacilityTypes.map((type) => (
-              <option key={type} value={type}>
-                {type}
-              </option>
-            ))}
-          </select>
-        </div>
+          <div className="select-container">
+            <BsHospitalFill className="select-icon" />
+            <select
+              value={selectedFacilityType}
+              onChange={(e) => setSelectedFacilityType(e.target.value)}
+              className="sidebar-input"
+            >
+              <option value=""> Facility Type </option>
+              {facilityTypes.map((type) => (
+                <option key={type} value={type}>
+                  {type}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        <div className="select-container">
-          <BsTools className="select-icon" />
-          <select
-            value={selectedEquipment}
-            onChange={(e) => setSelectedEquipment(e.target.value)}
-            className="sidebar-input"
-          >
-            <option value="">Equipment</option>
-            {staticEquipments.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
-            ))}
-          </select>
-        </div>
-
-
+          <div className="select-container">
+  <BsTools className="select-icon" />
+  <select
+    value={selectedEquipment}
+    onChange={(e) => setSelectedEquipment(e.target.value)}
+    className="sidebar-input"
+  >
+    <option value="">Equipment</option>
+    {equipments && equipments.map((item) => (
+      <option key={item} value={item}>
+        {item}
+      </option>
+    ))}
+  </select>
+</div>
         </div>
       </div>
 
