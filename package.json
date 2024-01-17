@@ -8,6 +8,7 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.5",
     "chart.js": "^4.4.0",
     "d3": "^7.8.5",
     "date-fns": "^2.30.0",
@@ -37,9 +38,9 @@
     ]
   },
   "browserslist": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
   "proxy": "http://localhost:5000"
 }
