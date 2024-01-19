@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { MapContainer, TileLayer, Polygon, GeoJSON, Tooltip, Popup  } from 'react-leaflet';
+import React, { useState, useEffect } from 'react';
+import { MapContainer, TileLayer, Polygon, GeoJSON, Tooltip, Popup, useMap } from 'react-leaflet';
+import L from 'leaflet'; // Add this line to import the L object
 import "leaflet/dist/leaflet.css";
 import Axios from 'axios';
 import { polyData } from "./data/polygon";

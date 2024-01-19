@@ -31,7 +31,7 @@ const ViebegDashboard = () => {
 
   // const apiUrl = 'https://kap-viebeg-server.onrender.com';
 
-  const apiUrl = "http://localhost:5000"
+  const apiUrl = "https://viebserver.onrender.com"
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
