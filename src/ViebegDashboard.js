@@ -2,18 +2,22 @@
 import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCog, faChevronDown, faArrowRightFromBracket, faBuilding, faTemperatureThreeQuarters } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faChevronDown, faArrowRightFromBracket, faBuilding, faTemperatureThreeQuarters, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import logo from './viebeg-logo.png';
 import { BsHospitalFill, BsTools, BsThermometerHigh, BsPinMapFill } from "react-icons/bs";
 import defaultProfileImage from './doc.jpg';
 import './viebeg-dashboard.css';
+import Map from './components/MapComponent';
+import MapComponent from './components/MapComponent';
 
-library.add(faCog, faChevronDown, faBuilding, faTemperatureThreeQuarters);
+library.add(faCog, faChevronDown, faBuilding, faTemperatureThreeQuarters, faBars, faTimes);
 
 const ViebegDashboard = () => {
   // State to manage the visibility of the settings dropdown
   const [isSettingDropdown, setSettingDropdown] = useState(false);
   const [isProfileDropdown, setProfileDropdown] = useState(false);
+
+  // Static arrays for dropdown options
 
   const [selectedSector, setSelectedSector] = useState('');
   const [selectedDisease, setSelectedDisease] = useState('');
@@ -25,9 +29,31 @@ const ViebegDashboard = () => {
   const [facilityTypes, setFacilityTypes] = useState([]);
   const [equipments, setEquipments] = useState([]);
 
-  const apiUrl = 'https://kap-viebeg-server.onrender.com';
+  // const apiUrl = 'https://kap-viebeg-server.onrender.com';
+
+  const apiUrl = "https://viebserver.onrender.com"
+
+  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isOverlayVisible, setOverlayVisible] = useState(false);
+
+  useEffect(() => {
+    setOverlayVisible(isMobileMenuOpen);
+  }, [isMobileMenuOpen]);
 
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const toggleSettingDropdown = () => {
+    setSettingDropdown(!isSettingDropdown);
+  };
+
+  const toggleProfileDropdown = () => {
+    setProfileDropdown(!isProfileDropdown);
+  };
+  
+  
   useEffect(() => {
           // Fetch data for sectors
           fetch(`${apiUrl}/api/sectors`)
@@ -74,40 +100,47 @@ const ViebegDashboard = () => {
         }, []); 
         
 
-  // Function to toggle the visibility of the dropdown
-  const toggleSettingDropdown = () => {
-    setSettingDropdown(!isSettingDropdown);
-  };
+ 
 
-  const toggleProfileDropdown = () => {
-    setProfileDropdown(!isProfileDropdown);
-  };
+
+
 
   return (
     <div>
-      <div className="viebeg-dashboard-navbar">
-        {/* Navbar Logo */}
-        <div className="viebeg-dashboard-navbar-logo">
-          <img src={logo} alt="Logo" className="logo" />
+   <div className='viebeg-dashboard-navbar'>
+    {/* Navbar Logo */}
+    <div className="viebeg-dashboard-navbar-logo">
+      <img src={logo} alt="Logo" className="logo" />
+    </div>
+
+
+
+    <div className="hamburger-menu" onClick={toggleMobileMenu}>
+  <FontAwesomeIcon icon={isMobileMenuOpen ? faTimes : faBars} className="hamburger-icon" />
+</div>
+
+
+
+
+
+    {/* Navbar content goes here */}
+      <div className={`navbar-content ${isMobileMenuOpen ? 'open' : 'closed'}`}>
+      {/* Settings Icon with Dropdown Arrow */}
+      <div className="settings-dropdown">
+        <div className="icon-container">
+          <FontAwesomeIcon
+            icon={['fas', 'cog']}
+            className="settings-icon"
+            onClick={toggleSettingDropdown}
+          />
+          <div
+            className={`set-dropdown-arrow ${isSettingDropdown ? 'up' : ''}`}
+            onClick={toggleSettingDropdown}
+          >
+            <FontAwesomeIcon icon={['fas', 'chevron-down']} />
+          </div>
         </div>
 
-        {/* Navbar content goes here */}
-        <div className="navbar-content">
-          {/* Settings Icon with Dropdown Arrow */}
-          <div className="settings-dropdown">
-            <div className="icon-container">
-              <FontAwesomeIcon
-                icon={['fas', 'cog']} // Updated to use 'fas' prefix for solid icons
-                className="settings-icon"
-                onClick={toggleSettingDropdown} // Added onClick to toggle the dropdown
-              />
-              <div
-                className={`dropdown-arrow ${isSettingDropdown ? 'up' : ''}`}
-                onClick={toggleSettingDropdown}
-              >
-                <FontAwesomeIcon icon={['fas', 'chevron-down']} />
-              </div>
-            </div>
 
             {/* Dropdown content */}
             {isSettingDropdown && (
@@ -155,14 +188,19 @@ const ViebegDashboard = () => {
           </div>
         </div>
       </div>
+
       
-      <div className="dashboard-container">
+      <div className={`overlay ${isMobileMenuOpen ? 'open' : ''}`} />
+
+
+      <div className={`dashboard-container ${isOverlayVisible ? 'overlay-open' : ''}`}>
       <div className="viebeg-dashboard-sidebar">
         <div className="sidebar-header">
           <p className="sidebar-filters">FILTERS</p>
           <p className="sidebar-filters">3000/3000</p>
           <button className="reset-button">Reset</button>
         </div>
+
         <div className="sidebar-inputs">
           {/* Search Input */}
           <input type="text" placeholder="Search..." className="search-input" />
@@ -231,52 +269,18 @@ const ViebegDashboard = () => {
     ))}
   </select>
 </div>
-
-
         </div>
       </div>
 
 
       <div className="viebeg-dashboard-main-content">
-  {/* Main content of the dashboard goes here */}
-  <h1 className="dashboard-title">Viebeg Health Assessment and Capacity Evaluation Tool (HACET)</h1>
-  <p className="dashboard-description">Explore and manage your healthcare data with ease.</p>
-
-  <hr className="divider" />
-
-
-
-          {selectedSector && (
-            <div className="selected-item-heading">
-              <h2>Selected Sector:</h2> <p>{selectedSector} Sector</p>
-            </div>
-          )}
-
-<div>
- {/* Display heading based on the selected disease */}
- {selectedDisease && (
-            <div className="selected-item-heading">
-              <h2>Selected Disease:</h2> <p>{selectedDisease}</p>
-            </div>
-          )}
-          
-   {selectedFacilityType && (
-            <div className="selected-item-heading">
-              <h2>Selected Facility Type:</h2> <p>{selectedFacilityType}</p>
-            </div>
-          )}
-
-{selectedEquipment && (
-            <div className="selected-item-heading">
-              <h2>Selected Equipment:</h2> <p>{selectedEquipment}</p>
-            </div>
-          )}
-
-          </div>
+  <MapComponent />
 
           </div>
 
       </div>
+
+
     </div>
   );
 };
