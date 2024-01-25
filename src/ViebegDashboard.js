@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { faCog, faChevronDown, faArrowRightFromBracket, faBuilding, faTemperatureThreeQuarters, faBars, faTimes } from '@fortawesome/free-solid-svg-icons';
 import logo from './viebeg-logo.png';
-import { BsHospitalFill, BsTools, BsThermometerHigh, BsPinMapFill } from "react-icons/bs";
+import { BsHospitalFill, BsTools, BsThermometerHigh, BsPinMapFill , BsArrowRight} from "react-icons/bs";
 import defaultProfileImage from './doc.jpg';
 import './viebeg-dashboard.css';
 import Map from './components/MapComponent';
@@ -31,7 +31,7 @@ const ViebegDashboard = () => {
 
   // const apiUrl = 'https://kap-viebeg-server.onrender.com';
 
-  const apiUrl = "https://viebserver.onrender.com"
+  const apiUrl = "http://localhost:5000"
 
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
@@ -73,7 +73,7 @@ const ViebegDashboard = () => {
           // Fetch Facility Types
           const fetchFacilityTypes = async () => {
             try {
-              const response = await fetch(`${apiUrl}/api/facility-types`);
+              const response = await fetch(`${apiUrl}/api/facilities`);
               const data = await response.json();
               setFacilityTypes(data);
             } catch (error) {
@@ -101,6 +101,64 @@ const ViebegDashboard = () => {
         
 
  
+        const [selectedSectors, setSelectedSectors] = useState([]);
+        const [isDropdownOpen, setDropdownOpen] = useState(false);
+      
+        // ... (other state variables and useEffect hooks)
+      
+        // Function to handle the selection of sectors
+        const handleSelectSector = (sector) => {
+          // Check if the sector is already selected
+          if (selectedSectors.includes(sector)) {
+            // If selected, remove it
+            setSelectedSectors((prevSelectedSectors) =>
+              prevSelectedSectors.filter((selectedSector) => selectedSector !== sector)
+            );
+          } else {
+            // If not selected, add it
+            setSelectedSectors((prevSelectedSectors) => [...prevSelectedSectors, sector]);
+          }
+        };
+
+        // New state variables and handlers for diseases
+  const [selectedDiseases, setSelectedDiseases] = useState([]);
+  const [isDiseaseDropdownOpen, setDiseaseDropdownOpen] = useState(false);
+
+  const handleSelectDisease = (disease) => {
+    if (selectedDiseases.includes(disease)) {
+      setSelectedDiseases((prevSelectedDiseases) =>
+        prevSelectedDiseases.filter((selectedDisease) => selectedDisease !== disease)
+      );
+    } else {
+      setSelectedDiseases((prevSelectedDiseases) => [...prevSelectedDiseases, disease]);
+    }
+  };
+
+  const [selectedEquipments, setSelectedEquipments] = useState([]);
+  const [isEquipmentDropdownOpen, setEquipmentDropdownOpen] = useState(false);
+
+  const handleSelectEquipment = (equipment) => {
+    if (selectedEquipments.includes(equipment)) {
+      setSelectedEquipments((prevSelectedEquipments) =>
+        prevSelectedEquipments.filter((selectedEquipment) => selectedEquipment !== equipment)
+      );
+    } else {
+      setSelectedEquipments((prevSelectedEquipments) => [...prevSelectedEquipments, equipment]);
+    }
+  };
+
+  const [isFacilityTypeDropdownOpen, setFacilityTypeDropdownOpen] = useState(false);
+const [selectedFacilityTypes, setSelectedFacilityTypes] = useState([]);
+
+const handleSelectFacilityType = (type) => {
+  if (selectedFacilityTypes.includes(type)) {
+    setSelectedFacilityTypes((prevSelectedFacilityTypes) =>
+      prevSelectedFacilityTypes.filter((selectedType) => selectedType !== type)
+    );
+  } else {
+    setSelectedFacilityTypes((prevSelectedFacilityTypes) => [...prevSelectedFacilityTypes, type]);
+  }
+};
 
 
 
@@ -205,72 +263,141 @@ const ViebegDashboard = () => {
           {/* Search Input */}
           <input type="text" placeholder="Search..." className="search-input" />
 
-          {/* Dropdown Select Fields */}
-          <div className="select-container">
-            <BsPinMapFill className="select-icon" />
-            <select
-              value={selectedSector}
-              onChange={(e) => setSelectedSector(e.target.value)}
-              className="sidebar-input"
-            >
-              <option value="">Select Sector</option>
-              {sectors.map((sector) => (
-                <option key={sector} value={sector}>
-                  {sector}
-                </option>
-              ))}
-            </select>
-          </div>
+ 
 
           <div className="select-container">
-            <BsThermometerHigh className="select-icon" />
-            <select
-              value={selectedDisease}
-              onChange={(e) => setSelectedDisease(e.target.value)}
-              className="sidebar-input"
-            >
-              <option value="">Disease</option>
-              {diseases.map((disease) => (
-                <option key={disease} value={disease}>
-                  {disease}
-                </option>
-              ))}
-            </select>
+      <div className="dropdown-header" onClick={() => setDropdownOpen(!isDropdownOpen)}>
+          <BsPinMapFill className="select-icon" />
+          <div className="selected-element">
+    {selectedSectors.length > 0 && (
+      <span className="count-badge">{selectedSectors.length}</span>
+    )}
+    {selectedSectors.length > 0 ? ' Sectors' : ' Sector'}
+  
+  </div>
+    <div className={`dropdown-arrow ${isDropdownOpen ? 'up' : ''}`}>
+      <FontAwesomeIcon icon={['fas', 'chevron-down']} />
+    </div>
+        </div>
+        {isDropdownOpen && (
+          <div className="dropdown-options">
+            {sectors.map((sector) => (
+              <label key={sector} className="option-label">
+                <input
+                  type="checkbox"
+                  value={sector}
+                  checked={selectedSectors.includes(sector)}
+                  onChange={() => handleSelectSector(sector)}
+                />
+                {sector}
+              </label>
+            ))}
           </div>
+        )}
+      </div>
 
-          <div className="select-container">
-            <BsHospitalFill className="select-icon" />
-            <select
-              value={selectedFacilityType}
-              onChange={(e) => setSelectedFacilityType(e.target.value)}
-              className="sidebar-input"
-            >
-              <option value=""> Facility Type </option>
-              {facilityTypes.map((type) => (
-                <option key={type} value={type}>
-                  {type}
-                </option>
-              ))}
-            </select>
-          </div>
+      
 
-          <div className="select-container">
-  <BsTools className="select-icon" />
-  <select
-    value={selectedEquipment}
-    onChange={(e) => setSelectedEquipment(e.target.value)}
-    className="sidebar-input"
-  >
-    <option value="">Equipment</option>
-    {equipments && equipments.map((item) => (
-      <option key={item} value={item}>
-        {item}
-      </option>
-    ))}
-  </select>
+      <div className="select-container">
+      <div className="dropdown-header" onClick={() => setDiseaseDropdownOpen(!isDiseaseDropdownOpen)}>
+  <BsThermometerHigh className="select-icon" />
+  <div className="selected-element">
+    {selectedDiseases.length > 0 && (
+      <span className="count-badge">{selectedDiseases.length}</span>
+    )}
+    {selectedDiseases.length > 0 ? ' Diseases' : ' Disease'}
+  </div>
+  <div className={`dropdown-arrow ${isDiseaseDropdownOpen ? 'up' : ''}`}>
+    <FontAwesomeIcon icon={['fas', 'chevron-down']} />
+  </div>
 </div>
+{isDiseaseDropdownOpen && (
+  <div className="dropdown-options">
+    {diseases.map((disease) => (
+      <label key={disease} className="option-label">
+        <input
+          type="checkbox"
+          value={disease}
+          checked={selectedDiseases.includes(disease)}
+          onChange={() => handleSelectDisease(disease)}
+        />
+        {disease}
+        </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+
+      <div className="select-container">
+  <div className="dropdown-header" onClick={() => setFacilityTypeDropdownOpen(!isFacilityTypeDropdownOpen)}>
+  <BsHospitalFill className="select-icon" />
+    <div className="selected-element">
+    {selectedFacilityType.length > 0 && (
+      <span className="count-badge">{selectedFacilityType.length}</span>
+    )}
+    {selectedFacilityType.length > 0 ? ' Facility Type' : ' Facility Type'}
+  </div>
+
+    <div className={`dropdown-arrow ${isFacilityTypeDropdownOpen ? 'up' : ''}`}>
+      <FontAwesomeIcon icon={['fas', 'chevron-down']} />
+    </div>
+  </div>
+  {isFacilityTypeDropdownOpen && (
+  <div className="dropdown-options">
+    {facilityTypes.map((type) => (
+      <label key={type} className="option-label">
+        <input
+          type="checkbox"
+          value={type}
+          checked={selectedFacilityTypes.includes(type)}
+          onChange={() => handleSelectFacilityType(type)}
+        />
+        {type}
+      </label>
+    ))}
+  </div>
+)}
+</div>
+
+
+      <div className="select-container">
+      <div className="dropdown-header" onClick={() => setEquipmentDropdownOpen(!isEquipmentDropdownOpen)}>
+  <BsTools className="select-icon" />
+  <div className="selected-element">
+    {selectedEquipments.length > 0 && (
+      <span className="count-badge">{selectedEquipments.length}</span>
+    )}
+    {selectedEquipments.length > 0 ? ' Equipments' : ' Equipment'}
+  </div>
+  <div className={`dropdown-arrow ${isEquipmentDropdownOpen ? 'up' : ''}`}>
+    <FontAwesomeIcon icon={['fas', 'chevron-down']} />
+  </div>
+</div>
+{isEquipmentDropdownOpen && (
+  <div className="dropdown-options">
+    {equipments.map((equipment) => (
+      <label key={equipment} className="option-label">
+        <input
+          type="checkbox"
+          value={equipment}
+          checked={selectedEquipments.includes(equipment)}
+          onChange={() => handleSelectEquipment(equipment)}
+        />
+        {equipment}
+        </label>
+            ))}
+          </div>
+        )}
+      </div>
+
+
+ 
+
         </div>
       </div>
+
+     
 
 
       <div className="viebeg-dashboard-main-content">
