@@ -52,6 +52,8 @@ const ViebegDashboard = () => {
   const toggleProfileDropdown = () => {
     setProfileDropdown(!isProfileDropdown);
   };
+
+  
   
   
   useEffect(() => {
@@ -160,7 +162,39 @@ const handleSelectFacilityType = (type) => {
   }
 };
 
+const [selectedSectorsData, setSelectedSectorsData] = useState([]);
+const [selectedSectorsBalance, setSelectedSectorsBalance] = useState([]);
+const [selectedSectorsSales, setSelectedSectorsSales] = useState([]);
+const [selectedSectorsCreditScore, setSelectedSectorsCreditScore] = useState([]);
 
+
+const useFetchData = (endpoint, setSelectedState) => {
+  useEffect(() => {
+    if (selectedSectors.length > 0) {
+      fetch(`${apiUrl}${endpoint}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ selectedSectors }),
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log(`Data for ${endpoint}:`, data);
+          setSelectedState(data);
+        })
+        .catch(error => console.error(`Error fetching ${endpoint} data:`, error));
+    }
+  }, [selectedSectors]);
+};
+
+// Usage
+useFetchData('/api/calculate-sums', setSelectedSectorsData);
+useFetchData('/api/calculate-balance', setSelectedSectorsBalance);
+useFetchData('/api/calculate-financials', (data) => {
+  setSelectedSectorsSales(data.map(sector => ({ Sector: sector.Sector, totalSales: sector.total_sales || 0 })));
+  setSelectedSectorsCreditScore(data.map(sector => ({ Sector: sector.Sector, totalCreditScore: sector.total_credit_score || 0 })));
+});
 
 
   return (
@@ -330,35 +364,38 @@ const handleSelectFacilityType = (type) => {
 
 
       <div className="select-container">
-  <div className="dropdown-header" onClick={() => setFacilityTypeDropdownOpen(!isFacilityTypeDropdownOpen)}>
-  <BsHospitalFill className="select-icon" />
-    <div className="selected-element">
-    {selectedFacilityType.length > 0 && (
-      <span className="count-badge">{selectedFacilityType.length}</span>
-    )}
-    {selectedFacilityType.length > 0 ? ' Facility Type' : ' Facility Type'}
-  </div>
-
-    <div className={`dropdown-arrow ${isFacilityTypeDropdownOpen ? 'up' : ''}`}>
-      <FontAwesomeIcon icon={['fas', 'chevron-down']} />
-    </div>
-  </div>
-  {isFacilityTypeDropdownOpen && (
-  <div className="dropdown-options">
-    {facilityTypes.map((type) => (
-      <label key={type} className="option-label">
-        <input
-          type="checkbox"
-          value={type}
-          checked={selectedFacilityTypes.includes(type)}
-          onChange={() => handleSelectFacilityType(type)}
-        />
-        {type}
-      </label>
-    ))}
-  </div>
-)}
-</div>
+        <div
+          className="dropdown-header"
+          onClick={() => setFacilityTypeDropdownOpen(!isFacilityTypeDropdownOpen)}
+        >
+          <BsHospitalFill className="select-icon" />
+          <div className="selected-element">
+            {/* Use selectedFacilityTypes instead of selectedFacilityType */}
+            {selectedFacilityTypes.length > 0 && (
+              <span className="count-badge">{selectedFacilityTypes.length}</span>
+            )}
+            {selectedFacilityTypes.length > 0 ? ' Facility Types' : ' Facility Type'}
+          </div>
+          <div className={`dropdown-arrow ${isFacilityTypeDropdownOpen ? 'up' : ''}`}>
+            <FontAwesomeIcon icon={faChevronDown} />
+          </div>
+        </div>
+        {isFacilityTypeDropdownOpen && (
+          <div className="dropdown-options">
+            {facilityTypes.map((type) => (
+              <label key={type} className="option-label">
+                <input
+                  type="checkbox"
+                  value={type}
+                  checked={selectedFacilityTypes.includes(type)}
+                  onChange={() => handleSelectFacilityType(type)}
+                />
+                {type}
+              </label>
+            ))}
+          </div>
+        )}
+      </div>
 
 
       <div className="select-container">
@@ -392,7 +429,6 @@ const handleSelectFacilityType = (type) => {
       </div>
 
 
- 
 
         </div>
       </div>
@@ -401,9 +437,28 @@ const handleSelectFacilityType = (type) => {
 
 
       <div className="viebeg-dashboard-main-content">
-  <MapComponent />
+      <div className="selected-elements-display">
+  {selectedSectors.length > 0 && <p>Sectors: {selectedSectors.join(', ')}</p>}
 
-          </div>
+  {selectedSectorsData.length > 0 && (
+    <>
+      <p>TOTAL NURSES {selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_nurses || 0), 0)}</p>
+      <p>TOTAL DOCTORS {selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_doctors || 0), 0)}</p>
+      <p>TOTAL PATIENTS/MONTH {selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_patients_permonth || 0), 0)}</p>
+      <p>TOTAL PATIENTS/DAY</p>
+      <p>EQUIPMENT AVAILABLE </p>
+      <p>EQUIPMENT SUPPLIED </p>
+      <p>TOTAL SALES {selectedSectorsSales.reduce((acc, sector) => acc + parseInt(sector.totalSales || 0), 0)}</p>
+      <p>TOTAL BALANCE {selectedSectorsBalance.reduce((acc, sector) => acc + parseInt(sector.total_balance || 0), 0)}</p>
+      <p>TOTAL CREDIT SCORE {selectedSectorsCreditScore.reduce((acc, sector) => acc + parseInt(sector.totalCreditScore || 0), 0)}</p>
+    </>
+  )}
+</div>
+
+
+        {/* Render the MapComponent */}
+        <MapComponent />
+      </div>
 
       </div>
 
