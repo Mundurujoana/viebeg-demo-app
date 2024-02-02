@@ -698,8 +698,6 @@ body {
 
 /* viebeg-dashboard.css */
 
-/* viebeg-dashboard.css */
-
 .selected-elements-display {
   position: fixed;
   bottom: 10px;
@@ -709,7 +707,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  font-family: 'Roboto', sans-serif; /* Use a preferred font family */
+  font-family: 'Roboto', sans-serif;
   max-width: 300px;
   width: 100%;
   text-align: left;
@@ -717,33 +715,14 @@ body {
 }
 
 .selected-elements-display p {
-  font-weight: bold;
-  margin-bottom: 10px;
-  font-size: 13px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
   color: #333;
 }
 
-.selected-elements-display span {
-  display: block;
-  margin-bottom: 8px;
-  font-size: 12px;
-  color: #666;
-}
-
-.selected-elements-display span:last-child {
-  margin-bottom: 0; /* Remove bottom margin for the last span */
-}
-
-/* Add or modify these styles in your CSS file */
-
-.selected-elements-display {
-  margin-top: 20px; /* Adjust the margin-top value to your preference */
-}
-
-.selected-elements-display p {
-  margin-bottom: 10px; /* Adjust the margin-bottom value to your preference */
-  padding: 0 10px; /* Adjust the padding value to add space on the left and right */
-  color: #666; /* Set your desired gray color */
-  font-size: 12px; /* Set your desired font size */
-  font-weight: 300;
+.selected-elements-display .value {
+  color: red; /* Set the color for values */
+  font-weight: bold; /* Adjust font weight if needed */
 }

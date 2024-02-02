@@ -192,8 +192,10 @@ const useFetchData = (endpoint, setSelectedState) => {
 useFetchData('/api/calculate-sums', setSelectedSectorsData);
 useFetchData('/api/calculate-balance', setSelectedSectorsBalance);
 useFetchData('/api/calculate-financials', (data) => {
-  setSelectedSectorsSales(data.map(sector => ({ Sector: sector.Sector, totalSales: sector.total_sales || 0 })));
-  setSelectedSectorsCreditScore(data.map(sector => ({ Sector: sector.Sector, totalCreditScore: sector.total_credit_score || 0 })));
+  setSelectedSectorsSales(data.map(sector =>
+     ({ Sector: sector.Sector, totalSales: sector.total_sales || 0 })));
+  setSelectedSectorsCreditScore(data.map(sector =>
+     ({ Sector: sector.Sector, totalCreditScore: sector.total_credit_score || 0 })));
 });
 
 
@@ -438,22 +440,23 @@ useFetchData('/api/calculate-financials', (data) => {
 
       <div className="viebeg-dashboard-main-content">
       <div className="selected-elements-display">
-  {selectedSectors.length > 0 && <p>Sectors: {selectedSectors.join(', ')}</p>}
+  {selectedSectors.length > 0 && <p className="title">Sectors: {selectedSectors.join(', ')}</p>}
 
   {selectedSectorsData.length > 0 && (
     <>
-      <p>TOTAL NURSES {selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_nurses || 0), 0)}</p>
-      <p>TOTAL DOCTORS {selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_doctors || 0), 0)}</p>
-      <p>TOTAL PATIENTS/MONTH {selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_patients_permonth || 0), 0)}</p>
-      <p>TOTAL PATIENTS/DAY</p>
-      <p>EQUIPMENT AVAILABLE </p>
-      <p>EQUIPMENT SUPPLIED </p>
-      <p>TOTAL SALES {selectedSectorsSales.reduce((acc, sector) => acc + parseInt(sector.totalSales || 0), 0)}</p>
-      <p>TOTAL BALANCE {selectedSectorsBalance.reduce((acc, sector) => acc + parseInt(sector.total_balance || 0), 0)}</p>
-      <p>TOTAL CREDIT SCORE {selectedSectorsCreditScore.reduce((acc, sector) => acc + parseInt(sector.totalCreditScore || 0), 0)}</p>
+      <p className="title">TOTAL NURSES <span className="value">{selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_nurses || 0), 0)}</span></p>
+      <p className="title">TOTAL DOCTORS <span className="value">{selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_doctors || 0), 0)}</span></p>
+      <p className="title">TOTAL PATIENTS/MONTH <span className="value">{selectedSectorsData.reduce((acc, sector) => acc + parseInt(sector.total_patients_permonth || 0), 0)}</span></p>
+      <p className="title">TOTAL PATIENTS/DAY</p>
+      <p className="title">EQUIPMENT AVAILABLE </p>
+      <p className="title">EQUIPMENT SUPPLIED </p>
+      <p className="title">TOTAL SALES <span className="value">{selectedSectorsSales.reduce((acc, sector) => acc + parseInt(sector.totalSales || 0), 0)}</span></p>
+      <p className="title">TOTAL BALANCE <span className="value">{selectedSectorsBalance.reduce((acc, sector) => acc + parseInt(sector.total_balance || 0), 0)}</span></p>
+      <p className="title">TOTAL CREDIT SCORE <span className="value">{selectedSectorsCreditScore.reduce((acc, sector) => acc + parseInt(sector.totalCreditScore || 0), 0)}</span></p>
     </>
   )}
 </div>
+
 
 
         {/* Render the MapComponent */}
