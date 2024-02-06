@@ -9,6 +9,10 @@ import defaultProfileImage from './doc.jpg';
 import './viebeg-dashboard.css';
 import Map from './components/MapComponent';
 import MapComponent from './components/MapComponent';
+import 'react-tagsinput/react-tagsinput.css';
+import TagsInput from 'react-tagsinput';
+
+
 
 library.add(faCog, faChevronDown, faBuilding, faTemperatureThreeQuarters, faBars, faTimes);
 
@@ -199,6 +203,15 @@ useFetchData('/api/calculate-financials', (data) => {
 });
 
 
+  // New state for the card visibility
+  const [isCardVisible, setCardVisible] = useState(false);
+
+  // Function to toggle card visibility
+  const toggleCardVisibility = () => {
+    setCardVisible(!isCardVisible);
+  };
+
+  
   return (
     <div>
    <div className='viebeg-dashboard-navbar'>
@@ -297,9 +310,16 @@ useFetchData('/api/calculate-financials', (data) => {
 
         <div className="sidebar-inputs">
           {/* Search Input */}
-          <input type="text" placeholder="Search..." className="search-input" />
+          <div className="select-container">
 
- 
+          <TagsInput
+        value={selectedSectors}
+        onChange={(tags) => setSelectedSectors(tags)}
+        inputProps={{ placeholder: selectedSectors.length === 0 ? 'Search...' : '' }}
+        className="search-input"  
+      />
+    </div>
+
 
           <div className="select-container">
       <div className="dropdown-header" onClick={() => setDropdownOpen(!isDropdownOpen)}>

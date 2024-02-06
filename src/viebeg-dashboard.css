@@ -726,3 +726,47 @@ body {
   color: red; /* Set the color for values */
   font-weight: bold; /* Adjust font weight if needed */
 }
+
+
+/* Add these styles to your existing CSS or update the existing styles */
+.search-input {
+  padding: 3px;
+  width: 100%; /* Adjust the width as needed */
+  font-size: 12px;
+  border: none;
+  border-radius: 5px; /* Add border-radius for rounded corners */
+  background-color: #fff;
+}
+
+/* Style for the tags within TagsInput */
+.search-input .react-tagsinput-tag {
+  background-color: #fff;
+  color: #807b7b;
+  border: 1px solid #dad6d6;
+  border-radius: 50px;
+  padding: 4px 9px; /* Adjust the padding to accommodate long names */
+  margin-top: 5px;
+  display: inline-block; /* Allow tags to appear in a single line */
+}
+
+/* Style for the background color of the tag value */
+.search-input .react-tagsinput-tag span {
+  background-color: #fff; /* Replace with your desired color */
+}
+
+/* Style for the "remove" button within TagsInput */
+.search-input .react-tagsinput-remove {
+  cursor: pointer;
+  margin-left: 9px;
+  color: #807b7b;
+  background-color: #e5e7eb;
+  border: none;
+  border-radius: 50%;
+  padding: 3px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  height: 8px;
+  width: 8px;
+}
