@@ -14,7 +14,7 @@ function App() {
       <div className="App">
         <header className="App-header">
           <Routes>
-          <Route path="/" exact element={<ViebegDashboard/>} />
+          <Route path="/" exact element={<CustomerList/>} />
           </Routes>
         </header>
       </div>

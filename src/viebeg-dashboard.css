@@ -770,3 +770,89 @@ body {
   height: 8px;
   width: 8px;
 }
+
+.selected-disease {
+  padding: 15px; /* Padding */
+  margin-top: 20px; /* Margin bottom */
+  display: flex; /* Set display to flex */
+  align-items: center; /* Align items vertically */
+}
+
+.selected-disease-heading {
+  margin: 0; /* Reset margin */
+  margin-right: 10px; /* Add right margin for spacing */
+  font-weight: bold; /* Bold font weight */
+}
+
+.selected-disease-value {
+  margin: 0; /* Reset margin */
+  font-weight: lighter; /* Set font weight to lighter */
+}
+
+
+.search-sector {
+  padding: 15px; /* Padding */
+}
+
+.search-sector p {
+  margin: 0; /* Reset margin */
+  margin-bottom: 10px; /* Add bottom margin for spacing */
+  font-weight: bold; /* Bold font weight */
+  text-align: left; /* Align the text to the left */
+}
+
+
+
+.multi-select {
+  width: 300px;
+  border: none;
+}
+
+.multi-select .Select-control {
+  text-align: left;
+}
+
+.multi-select .Select-menu {
+  text-align: left;
+  width: 500px;
+  position: absolute;
+  top: calc(100% + 10px);
+  z-index: 9999;
+}
+
+.multi-select .Select-placeholder {
+  text-align: left;
+  margin-left: 5px;
+  font-size: 10px;
+}
+
+
+
+.custom-search-input-container {
+  position: absolute;
+  top: 80px; /* Adjust the top position as needed */
+  right: 10px; /* Adjust the right position as needed */
+  z-index: 1000;
+}
+
+.custom-search-input {
+  width: 200px; /* Adjust the width as needed */
+  padding: 8px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 14px; /* Adjust the font size as needed */
+  outline: none; /* Remove the focus outline */
+}
+
+.search-icon {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  color: #999; /* Adjust the color as needed */
+  cursor: pointer;
+}
+
+.clear-icon {
+  color: #999; /* Adjust the color as needed */
+}

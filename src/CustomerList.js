@@ -27,12 +27,12 @@ const [isDistrictSubmitted, setIsDistrictSubmitted] = useState(false);
   
 
 
-  const apiUrl = 'https://viebeg-server.onrender.com';
+  const apiUrl = 'http://localhost:4000';
 
   useEffect(() => {
     const fetchDistricts = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/districts');
+        const response = await fetch('http://localhost:4000/api/districts');
         const data = await response.json();
         setDistrictOccurrences(data);
       } catch (error) {
@@ -169,7 +169,6 @@ const [isDistrictSubmitted, setIsDistrictSubmitted] = useState(false);
 
            // Use navigate to navigate to a new page with the selected customer
         
-           navigate(`/customer/${selectedCustomer}`);
 
         } else {
           console.error('No matching customer found for the selected name:', customerName);
@@ -405,7 +404,7 @@ const groupDataByYearAndPaymentStatus = (data) => {
  // Function to fetch district names from the server
  const fetchDistrictsName = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/districts-names'); // Update the URL
+    const response = await fetch('http://localhost:4000/api/districts-names'); // Update the URL
     const data = await response.json();
     setDistricts(data);
   } catch (error) {
